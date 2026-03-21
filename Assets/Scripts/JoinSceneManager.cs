@@ -29,11 +29,13 @@ public class JoinSceneManager : MonoBehaviour
 
     IEnumerator AllReadyCountdownCoro()
     {
-        for (int sec = 3; sec >= 0; sec--)
+        for (int sec = 3; sec > 0; sec--)
         {
             text.text = string.Format(msgCountdown, sec);
             yield return new WaitForSeconds(1.0f);
         }
+
+        text.text = "Starting now...";
 
         UnityEngine.SceneManagement.SceneManager.LoadScene(
             UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex + 1);
