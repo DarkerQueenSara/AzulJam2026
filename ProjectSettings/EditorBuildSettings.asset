@@ -6,8 +6,8 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/MainScene.unity
-    guid: 8c9cfa26abfee488c85f1582747f6a02
+    path: Assets/Scenes/TitleScreen.unity
+    guid: 021083aac954fd74e94462c01d3b47da
   - enabled: 1
     path: Assets/Scenes/JoinScene.unity
     guid: 96633fa6561764f4e80af0516ec593a1
@@ -15,7 +15,7 @@ EditorBuildSettings:
     path: Assets/Scenes/TutorialScene.unity
     guid: 311be5aa429be264f9373a8087e46331
   - enabled: 1
-    path: Assets/Scenes/TitleScreen.unity
-    guid: 021083aac954fd74e94462c01d3b47da
+    path: Assets/Scenes/MainScene.unity
+    guid: 8c9cfa26abfee488c85f1582747f6a02
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}

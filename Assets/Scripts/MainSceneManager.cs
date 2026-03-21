@@ -48,13 +48,22 @@ public class MainSceneManager : MonoBehaviour
     {
         
     }
+    
+    //Logic TODO
+    //get random question
+    //display and trigger question animation
+    //collect votes till there's = number of players
+    //reveal votes with animation
+    //check winner with tie resolving
+    //apply score
+    //check dead
+    //allow bet
+    //go to discuss phase
+    //start new round when all ready
 
     private void NewRound()
     {
-        //get random question
-        //display and trigger question animation
-        //collect votes till there's = number of players
-        //check winner with tie resolving
+        
     }
 
     private void CheckForAdvance()
