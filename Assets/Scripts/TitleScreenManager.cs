@@ -1,17 +1,15 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.UI;
 using BuzzControllerSystem;
+using UnityEngine.Assertions;
 
+[RequireComponent(typeof(BuzzInput))]
 public class TitleScreenManager : MonoBehaviour
 {
     const int NUM_BUZZ_PLAYERS = 4;
     const int NUM_BUZZ_BUTTONS = 5;
 
     public BuzzInput buzzInput;
+    public BuzzInput.BuzzButton startButton = BuzzInput.BuzzButton.Buzz;
 
     void Start()
     {
@@ -22,14 +20,10 @@ public class TitleScreenManager : MonoBehaviour
     {
         for (int player = 0; player < NUM_BUZZ_PLAYERS; player++)
         {
-            for (int button = 0; button < NUM_BUZZ_BUTTONS; button++)
+            if (buzzInput.GetButtonDown(player, startButton))
             {
-                var buzzButton = (BuzzInput.BuzzButton)button;
-                if (buzzInput.GetButtonDown(player, buzzButton))
-                {
-                    //Load the next scene
-                    UnityEngine.SceneManagement.SceneManager.LoadScene(1);
-                }
+                //Load the next scene
+                UnityEngine.SceneManagement.SceneManager.LoadScene(1);
             }
         }
     }
