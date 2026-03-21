@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 4afda73a7cf3f574d85b086eb3ce9e8d
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 264743
+  packageName: Buzz Controller System
+  packageVersion: 1.0
+  assetPath: Assets/BuzzControllerSystem/Example/Scripts/ControllerExample.cs
+  uploadId: 611387

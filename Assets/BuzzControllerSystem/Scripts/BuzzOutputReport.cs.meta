@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 40eeb96cdfb59ac45a2204a94c7fad92
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 264743
+  packageName: Buzz Controller System
+  packageVersion: 1.0
+  assetPath: Assets/BuzzControllerSystem/Scripts/BuzzOutputReport.cs
+  uploadId: 611387
