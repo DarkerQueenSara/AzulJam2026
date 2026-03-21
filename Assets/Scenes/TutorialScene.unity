@@ -874,6 +874,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 0
+  m_UseReflectionProbes: 0
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
@@ -913,8 +914,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07379a4f778b3e341a066c755c2ea9e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TutorialScreenManager
-  tutorialTextLines: []
-  tutorialText: []
+  tutorialTextLines:
+  - "You\u2019re witches at the stand, trying to become the most notorious! Without
+    getting burned, that is. "
+  - 'Every round there will be a secret vote to determine which witch gets the allotted
+    amount of evidence. '
+  - 'Some are incriminating, raising the score, others are exculpating, lowering
+    the score. '
+  - 'After that, the witches debate what just happened. They can accuse each other
+    or form alliances. '
+  - 'The goal is to have the highest score and end the game alive. '
+  - "Because if there\u2019s 10 pieces of evidence against you, YOU GET SET ON FIRE. "
+  - You can still vote, and also place a secret bet on another player, on whether
+    they will live or die.
+  - "When there\u2019s only one witch left alive, whoever bet right resurrects, and
+    whoever bet wrong dies.  "
+  - The winner is whoever is alive at the end and has the highest score.
+  - P.S. Ties are broken in favor of whoever replied faster. So be quick with your
+    thumbs!
+  tutorialText: {fileID: 402673950}
 --- !u!1 &717685806
 GameObject:
   m_ObjectHideFlags: 0

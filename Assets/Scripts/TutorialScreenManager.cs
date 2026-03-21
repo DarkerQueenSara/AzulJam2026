@@ -7,7 +7,7 @@ public class TutorialScreenManager : MonoBehaviour
 
     public List<string> tutorialTextLines;
 
-    public List<string> tutorialText;
+    public GameObject tutorialText;
 
     private int _currentIndex = 0;
     

@@ -13,6 +13,8 @@ public class MainSceneManager : MonoBehaviour
     public string betTypeString;
     
     public TextMeshProUGUI commandText;
+    private Animator _commandTextAnimator;
+    
     public GameObject redButtonHolder;
     
     private List<Image> _redButtons = new List<Image>();
@@ -37,6 +39,8 @@ public class MainSceneManager : MonoBehaviour
             _scores[i] = 0;
             _redButtons.Add(redButtonHolder.transform.GetChild(i).GetComponent<Image>());
         }
+        
+        _commandTextAnimator = commandText.GetComponent<Animator>();
     }
 
     // Update is called once per frame
