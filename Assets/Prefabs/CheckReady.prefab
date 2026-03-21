@@ -310,6 +310,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1009438867307146634}
   - component: {fileID: 3311927600667569585}
+  - component: {fileID: 7055456923762184169}
+  - component: {fileID: 7147410131343593916}
   m_Layer: 5
   m_Name: CheckReady
   m_TagString: Untagged
@@ -366,3 +368,31 @@ MonoBehaviour:
   m_ChildScaleWidth: 1
   m_ChildScaleHeight: 1
   m_ReverseArrangement: 0
+--- !u!114 &7055456923762184169
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8195724875909327559}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0791b015903e072459f39693464b8b99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  input: {fileID: 7147410131343593916}
+--- !u!114 &7147410131343593916
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8195724875909327559}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 58bc32c909fc96545a58cb5ca6e2aac9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BuzzControllerSystem.BuzzInput
+  slowSequenceTime: 1
+  normalSequenceTime: 0.4
+  fastSequenceTime: 0.1
