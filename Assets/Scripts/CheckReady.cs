@@ -66,6 +66,7 @@ public class CheckReady : MonoBehaviour
 
                 if (input.GetButtonDown(_currentChecking, BuzzInput.BuzzButton.Buzz))
                 {
+                    input.SetLight(_currentChecking, true);
                     setImageVisibility(_currentChecking, true);
 
                     _currentChecking++;
@@ -73,6 +74,11 @@ public class CheckReady : MonoBehaviour
 
                     if (_currentChecking == 4)
                     {
+                        for (int i = 0; i < 4; i++)
+                        {
+                            input.SetLight(i, false);
+                        }
+                        
                         onAllPlayersHavePressed.Invoke();
                         _callback?.Invoke();
                         _callback = null;
@@ -86,12 +92,18 @@ public class CheckReady : MonoBehaviour
                 {
                     if (input.GetButtonDown(i, BuzzInput.BuzzButton.Buzz))
                     {
+                        input.SetLight(i, true);
                         _playerPressed[i] = true;
                         setImageVisibility(i, true);
                     }
                 }
                 if (_playerPressed.All(p => p))
                 {
+                    for (int i = 0; i < 4; i++)
+                    {
+                        input.SetLight(i, false);
+                    }
+                    
                     onAllPlayersHavePressed.Invoke();
                     _callback?.Invoke();
                     _callback = null;

@@ -36,6 +36,9 @@ public class MainSceneManager : MonoBehaviour
     private List<Animator> _votesAnimators;
     private List<TextMeshProUGUI> _votesText;
 
+    public List<int> pointsToGain;
+    public List<int> pointsToLose;
+    
     public GameObject redButtonHolder;
 
     public CheckReady checkReady;
@@ -69,6 +72,7 @@ public class MainSceneManager : MonoBehaviour
 
     private int _currentQuestion = -1;
     private int _currentScore = 0;
+    private int _currentLoss = 0;
     private int _currentVoteTarget = -1;
 
     private int _betsThisRound = 0;
@@ -209,7 +213,6 @@ public class MainSceneManager : MonoBehaviour
 
         foreach (TextMeshProUGUI text in _votesText)
         {
-            text.gameObject.SetActive(false);
             text.text = "";
             text.gameObject.SetActive(false);
         }
@@ -225,7 +228,8 @@ public class MainSceneManager : MonoBehaviour
         _currentVoteTarget = -1;
         _currentScore = 0;
         _currentQuestion = -1;
-
+        _currentLoss = 0;
+        
         _betsThisRound = 0;
         _betsExist = false;
         _roundDone = false;
@@ -236,19 +240,30 @@ public class MainSceneManager : MonoBehaviour
     private void NewRound()
     {
         Debug.Log($"Entrou no NewRound");
-        _currentQuestion = UnityEngine.Random.Range(0, 3);
+        _currentQuestion = UnityEngine.Random.Range(0, 4);
         if (_currentQuestion < 2)
         {
-            _currentScore = UnityEngine.Random.Range(1, 4);
+            var auxList = _currentQuestion == 0 ? pointsToGain : pointsToLose;
+            
+            _currentScore = auxList[UnityEngine.Random.Range(0, auxList.Count)];
             commandText.text = questions[_currentQuestion]
                 .Replace("X", _currentScore.ToString())
                 .Replace("Z", (_currentScore > 1) ? "s" : "");
         }
-        else
+        else if (_currentQuestion == 3)
         {
             _currentVoteTarget = UnityEngine.Random.Range(0, 4);
             commandText.text = questions[_currentQuestion]
                     .Replace("Y", NumToColor(_currentVoteTarget));
+        }
+        else
+        {
+            _currentScore = pointsToGain[UnityEngine.Random.Range(0, pointsToGain.Count)];
+            _currentLoss = pointsToLose[UnityEngine.Random.Range(0, pointsToLose.Count)];
+            commandText.text = questions[_currentQuestion]
+                .Replace("X", _currentScore.ToString())
+                .Replace("O", _currentLoss.ToString())
+                .Replace("Z", (_currentScore > 1) ? "s" : "");
         }
         // preencher com nrs random e/ou target random e guardar
         commandText.gameObject.SetActive(true);
@@ -268,7 +283,7 @@ public class MainSceneManager : MonoBehaviour
     private void AddVote(int numberVote, int value)
     {
         Debug.Log($"Entrou no AddVote com numberVote {numberVote} e value {value}");
-        _votesAnimators[numberVote].transform.gameObject.SetActive(true);
+        _votesAnimators[numberVote].gameObject.SetActive(true);
         _votesAnimators[numberVote].Rebind();
         _votesAnimators[numberVote].Update(0);
         _votesText[numberVote].text = NumToColor(value);
@@ -354,6 +369,14 @@ public class MainSceneManager : MonoBehaviour
                         _scores[i] = Math.Max(0, _scores[i] - 1);
                     }
                 }
+                break;
+            case 3:
+                _scores[winner] = Math.Max(0, _scores[winner] + _currentScore);
+                for (int i = 0; i < 4; i++)
+                {
+                    if (i != winner) _scores[i] = Math.Max(0, _scores[i] - 1);
+                }
+
                 break;
         }
 

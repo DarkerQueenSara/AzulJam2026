@@ -14,6 +14,7 @@ public class TitleScreenManager : MonoBehaviour
     void Start()
     {
         buzzInput = GetComponent<BuzzInput>();
+        buzzInput.StartLightSequence(BuzzInput.BuzzLightSequence.FastMove);
     }
 
     void Update()
