@@ -207,6 +207,8 @@ public class MainSceneManager : MonoBehaviour
     {
         Debug.Log($"Entrou no CleanUp");
         checkReady.HideAll();
+        checkReady.enabled = false;
+
         _recentlyDeceased.Clear();
         _votes.Clear();
         _voted = Enumerable.Repeat(false, 4).ToArray();
@@ -283,9 +285,10 @@ public class MainSceneManager : MonoBehaviour
     private void AddVote(int numberVote, int value)
     {
         Debug.Log($"Entrou no AddVote com numberVote {numberVote} e value {value}");
-        _votesAnimators[numberVote].gameObject.SetActive(true);
+        _votesAnimators[numberVote].gameObject.SetActive(false);
         _votesAnimators[numberVote].Rebind();
         _votesAnimators[numberVote].Update(0);
+        _votesAnimators[numberVote].gameObject.SetActive(true);
         _votesText[numberVote].text = NumToColor(value);
     }
     
@@ -514,7 +517,7 @@ public class MainSceneManager : MonoBehaviour
     {
         Debug.Log($"Entrou no AdvanceToDiscussion");
         _advanceCalled = true;
-        
+        checkReady.enabled = true;
         //start new round when all ready
         commandText.gameObject.SetActive(false);
         _commandTextAnimator.Rebind();
