@@ -14,7 +14,7 @@ public class JoinSceneManager : MonoBehaviour
 
     void Start()
     {
-        checkReady.requestedPlayerPress.AddListener((int player) =>
+        checkReady.onAskForPlayerPress.AddListener((int player) =>
         {
             text.text = string.Format(msgPlayerPress, player + 1);
         });
@@ -24,7 +24,7 @@ public class JoinSceneManager : MonoBehaviour
             StartCoroutine(AllReadyCountdownCoro());
         });
 
-        checkReady.RequestAllPlayerPress();
+        checkReady.RequestAllPlayerPress(CheckReady.Order.From1To4);
     }
 
     IEnumerator AllReadyCountdownCoro()

@@ -1,50 +1,103 @@
 using BuzzControllerSystem;
 using System;
+using System.Linq;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(BuzzInput))]
 public class CheckReady : MonoBehaviour
 {
+    public enum Order
+    {
+        From1To4,
+        Arbitrary,
+        None
+    }
+    
     public BuzzInput input;
     public Image[] images;
     public Color[] playerColors;
 
-    // assigned by JoinSceneManager in ancestor Canvas on Start()
-    public JoinSceneManager joinSceneManager;
+    public UnityEvent<int> onAskForPlayerPress;
+    public UnityEvent onAllPlayersHavePressed;
 
-    public UnityEvent<int> requestedPlayerPress;
-    public UnityEvent allJoined;
+    // player presses bookkeeping
+    private Order _order;
+    private int _currentChecking = 0;
+    private bool[] _playerPressed = new bool[4];
 
-    // all-player-request state
-    int currentChecking = 0;
-    TextMeshProUGUI textField = null;
 
-    public void RequestAllPlayerPress()
+    public void RequestAllPlayerPress(Order order)
     {
-        requestedPlayerPress.Invoke(0);
+        for (int i = 0; i < 4; i++)
+        {
+            setImageVisibility(i, false);
+        }
+
+        this._order = order;
+        _currentChecking = 0;
+        _playerPressed = new bool[4];
+        onAskForPlayerPress.Invoke(0);
     }
+
 
     // Update is called once per frame
     void Update()
     {
-        if (currentChecking < 4)
+        switch (_order)
         {
-            if (input.GetButtonDown(currentChecking, BuzzInput.BuzzButton.Buzz))
-            {
-                images[currentChecking].color = playerColors[currentChecking];
-                currentChecking++;
-                requestedPlayerPress.Invoke(currentChecking);
+            case Order.From1To4:
+                Assert.IsTrue(_currentChecking >= 0 && _currentChecking < 4,
+                    $"Current checking index {_currentChecking} is out of bounds!");
 
-                if (currentChecking == 4)
+                if (input.GetButtonDown(_currentChecking, BuzzInput.BuzzButton.Buzz))
                 {
-                    allJoined.Invoke();
+                    setImageVisibility(_currentChecking, true);
+
+                    _currentChecking++;
+                    onAskForPlayerPress.Invoke(_currentChecking);
+
+                    if (_currentChecking == 4)
+                    {
+                        onAllPlayersHavePressed.Invoke();
+                        _order = Order.None;
+                    }
                 }
-            }
+                break;
+
+            case Order.Arbitrary:
+                for (int i = 0; i < 4; i++)
+                {
+                    if (input.GetButtonDown(i, BuzzInput.BuzzButton.Buzz))
+                    {
+                        _playerPressed[i] = true;
+                        setImageVisibility(i, true);
+                    }
+                }
+                if (_playerPressed.All(p => p))
+                {
+                    onAllPlayersHavePressed.Invoke();
+                    _order = Order.None;
+                }
+                break;
+
+            default:
+                break;
         }
-        // else all players have pressed, do nothing until next RequestAllPlayerPress()
+    }
+
+
+    private void setImageVisibility(int playerIndex, bool visible)
+    {
+        images[playerIndex].gameObject.SetActive(visible);
+
+        //Color currColor = images[playerIndex].color;
+        //currColor.a = visible ? 1.0f : 0.0f;
+        //images[playerIndex].color = currColor;
     }
 
 }
