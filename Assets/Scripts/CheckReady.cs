@@ -17,6 +17,9 @@ public class CheckReady : MonoBehaviour
         Arbitrary,
         None
     }
+
+    public delegate void AllPlayersPressedCallback();
+
     
     public BuzzInput input;
     public Image[] images;
@@ -29,9 +32,10 @@ public class CheckReady : MonoBehaviour
     private Order _order;
     private int _currentChecking = 0;
     private bool[] _playerPressed = new bool[4];
+    private AllPlayersPressedCallback _callback;
 
 
-    public void RequestAllPlayerPress(Order order)
+    public void RequestAllPlayerPress(Order order, AllPlayersPressedCallback callback = null)
     {
         for (int i = 0; i < 4; i++)
         {
@@ -41,6 +45,7 @@ public class CheckReady : MonoBehaviour
         this._order = order;
         _currentChecking = 0;
         _playerPressed = new bool[4];
+        _callback = callback;
         onAskForPlayerPress.Invoke(0);
     }
 
@@ -64,6 +69,8 @@ public class CheckReady : MonoBehaviour
                     if (_currentChecking == 4)
                     {
                         onAllPlayersHavePressed.Invoke();
+                        _callback?.Invoke();
+                        _callback = null;
                         _order = Order.None;
                     }
                 }
@@ -81,6 +88,8 @@ public class CheckReady : MonoBehaviour
                 if (_playerPressed.All(p => p))
                 {
                     onAllPlayersHavePressed.Invoke();
+                    _callback?.Invoke();
+                    _callback = null;
                     _order = Order.None;
                 }
                 break;

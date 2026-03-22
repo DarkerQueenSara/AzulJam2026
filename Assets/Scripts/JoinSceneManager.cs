@@ -19,7 +19,7 @@ public class JoinSceneManager : MonoBehaviour
             text.text = string.Format(msgPlayerPress, player + 1);
         });
 
-        checkReady.allJoined.AddListener(() =>
+        checkReady.onAllPlayersHavePressed.AddListener(() =>
         {
             StartCoroutine(AllReadyCountdownCoro());
         });
