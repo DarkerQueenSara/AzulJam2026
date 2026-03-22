@@ -1155,7 +1155,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69d90062bcde9c649b712a6fd64ef0e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MainSceneManager
-  deathCap: 10
+  deathCap: 5
   discussionString: Discuss amongst yourselves. When done, press the red button.
   betTargetString: Witch X, who do you want to bet on?
   betTypeString: What type of bet? Press Blue/Orange to vote on their demise, or
@@ -1170,7 +1170,7 @@ MonoBehaviour:
   skulls: {fileID: 1029117868}
   commandText: {fileID: 1811610144}
   votesHolder: {fileID: 339832451}
-  pointsToGain: 01000000010000000200000002000000020000000200000003000000030000000300000003000000030000000300000004000000040000000400000004000000050000000500000005000000
+  pointsToGain: 01000000010000000100000002000000020000000200000002000000020000000300000003000000
   pointsToLose: 010000000100000001000000010000000100000002000000020000000200000002000000020000000300000003000000040000000400000005000000
   redButtonHolder: {fileID: 3721532421753211757}
   checkReady: {fileID: 3721532421753211758}
@@ -2261,7 +2261,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Who Should Win 1 Piece of Evidence?
+  m_text: If witch Y wins unanimously, they get 2 pieces of evidence, but everyone
+    else gets 1 too. Otherwise everyone loses 1.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: b9f547bf0ba31574e8f099f7cc85af94, type: 2}
   m_sharedMaterial: {fileID: -1089644694369174432, guid: b9f547bf0ba31574e8f099f7cc85af94, type: 2}
@@ -2288,8 +2289,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 9.8
+  m_fontSizeBase: 9.8
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 1
@@ -2307,7 +2308,7 @@ MonoBehaviour:
   m_charWidthMaxAdj: 0
   m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
-  m_overflowMode: 0
+  m_overflowMode: 1
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 0

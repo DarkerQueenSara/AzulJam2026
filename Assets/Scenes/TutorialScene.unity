@@ -404,8 +404,8 @@ MonoBehaviour:
   m_text: "You\u2019re witches at the stand, trying to become the most notorious!
     Without getting burned, that is."
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 7980389953f7b4844a3495880c39eabb, type: 2}
-  m_sharedMaterial: {fileID: 8800074967450711375, guid: 7980389953f7b4844a3495880c39eabb, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: b9f547bf0ba31574e8f099f7cc85af94, type: 2}
+  m_sharedMaterial: {fileID: -1089644694369174432, guid: b9f547bf0ba31574e8f099f7cc85af94, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -429,7 +429,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24.25
+  m_fontSize: 27.5
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -935,7 +935,7 @@ MonoBehaviour:
   - 'After that, the witches debate what just happened. They can accuse each other
     or form alliances. '
   - 'The goal is to have the highest score and end the game alive. '
-  - "Because if there\u2019s 10 pieces of evidence against you, YOU GET SET ON FIRE. "
+  - 'Because if there are 5 pieces of evidence against you, YOU GET SET ON FIRE. '
   - You can still vote, and also place a secret bet on another player, on whether
     they will live or die.
   - "When there\u2019s only one witch left alive, whoever bet right resurrects, and

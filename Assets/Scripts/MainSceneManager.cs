@@ -194,10 +194,10 @@ public class MainSceneManager : MonoBehaviour
                                 _bets.Add(
                                     new KeyValuePair<int, KeyValuePair<int, bool>>(p,
                                         new KeyValuePair<int, bool>(_currentBetTarget, _currentBetType)));
-                                waitForNextBeter(1.0f);
                                 _canBet[p] = false;
                                 _currentBetter = -1;
                                 _betsThisRound++;
+                                waitForNextBeter(1.0f);
                             }
                         }
                     }
@@ -221,14 +221,7 @@ public class MainSceneManager : MonoBehaviour
             text.text = "";
             text.gameObject.SetActive(false);
         }
-
-        foreach (Animator animator in _votesAnimators)
-        {
-            animator.gameObject.SetActive(false);
-            animator.Rebind();
-            animator.Update(0);
-        }
-
+        
         _currentBetTarget = -1;
         _currentVoteTarget = -1;
         _currentScore = 0;
