@@ -433,13 +433,12 @@ public class MainSceneManager : MonoBehaviour
     {
         Debug.Log($"Entrou no PlaceBetTargets com {_recentlyDeceased.Count} recentemente falecidos");
         _roundDone = true;
-        votesHolder.SetActive(false);
 
         foreach (var e in  _votesAnimators)
         {
             e.Rebind();
             e.Update(0);
-            e.gameObject.SetActive(true);
+            e.gameObject.SetActive(false);
         }
 
         //nao pode ser só ciclo, tem de haver mecanismo para ser só um a dar bet de cada vez
