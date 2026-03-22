@@ -176,7 +176,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 10
+  m_text: 0
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: b9f547bf0ba31574e8f099f7cc85af94, type: 2}
   m_sharedMaterial: {fileID: -1089644694369174432, guid: b9f547bf0ba31574e8f099f7cc85af94, type: 2}
@@ -1155,7 +1155,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69d90062bcde9c649b712a6fd64ef0e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MainSceneManager
-  deathCap: 10
+  deathCap: 1
   discussionString: Discuss amongst yourselves. When done, press the red button.
   betTargetString: Witch X, who do you want to bet on?
   betTypeString: What type of bet? Press Blue/Orange to vote on their demise, or
@@ -1460,7 +1460,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 10
+  m_text: 0
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: b9f547bf0ba31574e8f099f7cc85af94, type: 2}
   m_sharedMaterial: {fileID: -1089644694369174432, guid: b9f547bf0ba31574e8f099f7cc85af94, type: 2}
@@ -1908,7 +1908,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 10
+  m_text: 0
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: b9f547bf0ba31574e8f099f7cc85af94, type: 2}
   m_sharedMaterial: {fileID: -1089644694369174432, guid: b9f547bf0ba31574e8f099f7cc85af94, type: 2}
@@ -2045,7 +2045,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 10
+  m_text: 0
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: b9f547bf0ba31574e8f099f7cc85af94, type: 2}
   m_sharedMaterial: {fileID: -1089644694369174432, guid: b9f547bf0ba31574e8f099f7cc85af94, type: 2}

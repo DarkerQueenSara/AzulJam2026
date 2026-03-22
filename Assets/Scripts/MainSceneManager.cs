@@ -77,10 +77,10 @@ public class MainSceneManager : MonoBehaviour
     {
         return i switch
         {
-            1 => "Blue",
-            2 => "Orange",
-            3 => "Green",
-            4 => "Yellow",
+            0 => "Blue",
+            1 => "Orange",
+            2 => "Green",
+            3 => "Yellow",
             _ => ""
         };
     }
@@ -123,14 +123,12 @@ public class MainSceneManager : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
-        Debug.Log("=== UPDATE ===");
-
         if (_votingActive)
         {
             if (_votes.Count == 4)
             {
                 _votingActive = false;
-                DisplayResults();
+                StartCoroutine(DisplayResults(1.0f));
             }
 
             //Update Player p [0..3]
@@ -144,7 +142,7 @@ public class MainSceneManager : MonoBehaviour
                         {
                             _votes.Add(new KeyValuePair<int, int>(p, i - 1));
                             _voted[p] = true;
-                            AddVote(_votes.Count - 1, i - 1);
+                            AddVote(_votes.Count() - 1, i - 1);
                         }
                     }
                 }
@@ -165,11 +163,13 @@ public class MainSceneManager : MonoBehaviour
                         {
                             if (!_deadPlayers[i - 1] && i != p+1 && _currentBetTarget == -1)
                             {
+                                Debug.Log($"Player {p} bet on player {i-1}");
                                 _currentBetTarget = i - 1;
                                 StartCoroutine(waitForBetType(3.0f));
                             }
                             else if (_currentBetTarget >= 0)
                             {
+                                Debug.Log($"Player {p} bet on player {i-1} on type {i > 2}");
                                 _currentBetType = i > 2;
                                 _bets.Add(
                                     new KeyValuePair<int, KeyValuePair<int, bool>>(p,
@@ -191,6 +191,8 @@ public class MainSceneManager : MonoBehaviour
 
     private void CleanUp()
     {
+        Debug.Log($"Entrou no CleanUp");
+        checkReady.HideAll();
         _recentlyDeceased.Clear();
         _votes.Clear();
         _voted = Enumerable.Repeat(false, 4).ToArray();
@@ -217,6 +219,7 @@ public class MainSceneManager : MonoBehaviour
     
     private void NewRound()
     {
+        Debug.Log($"Entrou no NewRound");
         // random question, e guardar
         _currentQuestion = UnityEngine.Random.Range(0, 3);
         if (_currentQuestion < 2)
@@ -241,6 +244,7 @@ public class MainSceneManager : MonoBehaviour
 
     private IEnumerator EnableVoting(float seconds)
     {
+        Debug.Log($"Entrou no EnableVoting");
         yield return new WaitForSeconds(seconds);
         votesHolder.SetActive(true);
         _votingActive = true;
@@ -248,19 +252,21 @@ public class MainSceneManager : MonoBehaviour
 
     private void AddVote(int numberVote, int value)
     {
+        Debug.Log($"Entrou no AddVote com numberVote {numberVote} e value {value}");
         _votesAnimators[numberVote].transform.gameObject.SetActive(true);
         _votesAnimators[numberVote].Rebind();
         _votesAnimators[numberVote].Update(0);
-
         _votesText[numberVote].text = NumToColor(value);
     }
     
-    private void DisplayResults()
+    private IEnumerator DisplayResults(float seconds)
     {
+        Debug.Log($"Entrou no DisplayResults");
+        yield return new WaitForSeconds(seconds);
         for (int i = 0; i < _votesAnimators.Count; i++)
         {
             _votesAnimators[i].SetTrigger(Reveal);
-            StartCoroutine(ShowVote(3, i));
+            StartCoroutine(ShowVote(1.0f, i));
         }
 
         List<int> votesCount = _votes.Select(t => t.Value).ToList();
@@ -268,18 +274,20 @@ public class MainSceneManager : MonoBehaviour
         int winner = votesCount.GroupBy(i=>i).OrderByDescending(grp=>grp.Count())
             .Select(grp=>grp.Key).First();
         
-        StartCoroutine(ShowWinner(3, winner, votesCount.Count(vote => vote == winner)));
+        StartCoroutine(ShowWinner(5.0f, winner, votesCount.Count(vote => vote == winner)));
 
     }
     
     private IEnumerator ShowVote(float seconds, int index)
     {
+        Debug.Log($"Entrou no ShowVote com index {index}");
         yield return new WaitForSeconds(seconds);
         _votesText[index].gameObject.SetActive(true);
     }
     
     private IEnumerator ShowWinner(float seconds, int winner, int numVotes)
     {
+        Debug.Log($"Entrou no ShowWinner com winner {winner} e numVotes {numVotes}");
         yield return new WaitForSeconds(seconds);
 
         for (int i = 0; i < _votes.Count; i++)
@@ -308,13 +316,15 @@ public class MainSceneManager : MonoBehaviour
 
     private void ScoreVote(int winner, int numVotes)
     {
+        Debug.Log($"Entrou no ScoreVote com winner {winner} e numVotes {numVotes}");
+        
         switch (_currentQuestion)
         {
             case 0:
-                _scores[winner] += _currentScore;
+                _scores[winner] = Math.Max(0, _scores[winner] + _currentScore);
                 break;
             case 1:
-                _scores[winner] -= _currentScore;
+                _scores[winner] = Math.Max(0, _scores[winner] - _currentScore);
                 break;
             case 2:
                 if (numVotes == 4 && winner == _currentVoteTarget)
@@ -326,15 +336,22 @@ public class MainSceneManager : MonoBehaviour
                 } else {
                     for (int i = 0; i < 4; i++)
                     {
-                        _scores[i] -= 1;
+                        _scores[i] = Math.Max(0, _scores[i] - 1);
                     }
                 }
                 break;
+        }
+
+        for (int i = 0; i < 4; i++)
+        {
+            scoreTexts[i].text = _scores[i].ToString();
         }
     }
 
     private void CheckDead()
     {
+        Debug.Log($"Entrou no CheckDead");
+
         for (int i = 0; i < _scores.Length; i++)
         {
             if (!_deadPlayers[i] && _scores[i] >= deathCap)
@@ -399,11 +416,14 @@ public class MainSceneManager : MonoBehaviour
 
     private void PlaceBetTargets()
     {
+        Debug.Log($"Entrou no PlaceBetTargets com {_recentlyDeceased.Count} recentemente falecidos");
+
         //nao pode ser só ciclo, tem de haver mecanismo para ser só um a dar bet de cada vez
         for (int i = 0; i < _recentlyDeceased.Count; i++)
         {
             while (!_bettingActive)
             {
+                Debug.Log($"Entrou no Enabling do Bet para o jogador {i}");
                 _canBet[i] = true;
                 commandText.gameObject.SetActive(false);
                 _commandTextAnimator.Rebind();
@@ -420,6 +440,7 @@ public class MainSceneManager : MonoBehaviour
     
     private void PlaceBetType()
     {
+        Debug.Log($"Entrou no PlaceBetType");
         //nao pode ser só ciclo, tem de haver mecanismo para ser só um a dar bet de cada vez
         commandText.gameObject.SetActive(false);
         _commandTextAnimator.Rebind();
@@ -431,6 +452,7 @@ public class MainSceneManager : MonoBehaviour
 
     private IEnumerator waitForBetType(float seconds)
     {
+        Debug.Log($"Entrou no waitForBetType");
         _canBet[_currentBetter] = false;
         yield return new WaitForSeconds(seconds);
         PlaceBetType();
@@ -440,15 +462,19 @@ public class MainSceneManager : MonoBehaviour
 
     private IEnumerator waitForNextBeter(float seconds)
     {
+        Debug.Log($"Entrou no waitForNextBeter");
         yield return new WaitForSeconds(seconds);
         _bettingActive = false;
     }
 
     private IEnumerator AdvanceToDiscussion(float seconds)
     {
-        yield return new WaitForSeconds(seconds);
+        Debug.Log($"Entrou no AdvanceToDiscussion");
 
+        yield return new WaitForSeconds(seconds);
+        
         //start new round when all ready
+        votesHolder.SetActive(false);
         commandText.gameObject.SetActive(false);
         _commandTextAnimator.Rebind();
         _commandTextAnimator.Update(0);
@@ -461,6 +487,7 @@ public class MainSceneManager : MonoBehaviour
 
     private IEnumerator DisplayAllLose(float seconds)
     {
+        Debug.Log($"Entrou no DisplayAllLose");
         yield return new WaitForSeconds(seconds);
         commandText.gameObject.SetActive(false);
         _commandTextAnimator.Rebind();
@@ -472,6 +499,7 @@ public class MainSceneManager : MonoBehaviour
 
     private IEnumerator DisplayWinner(float seconds, int winner)
     {
+        Debug.Log($"Entrou no DisplayWinner com winner {winner}");
         yield return new WaitForSeconds(seconds);
         commandText.gameObject.SetActive(false);
         _commandTextAnimator.Rebind();
