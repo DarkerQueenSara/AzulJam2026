@@ -37,16 +37,21 @@ public class CheckReady : MonoBehaviour
 
     public void RequestAllPlayerPress(Order order, AllPlayersPressedCallback callback = null)
     {
-        for (int i = 0; i < 4; i++)
-        {
-            setImageVisibility(i, false);
-        }
+        HideAll();
 
         this._order = order;
         _currentChecking = 0;
         _playerPressed = new bool[4];
         _callback = callback;
         onAskForPlayerPress.Invoke(0);
+    }
+
+    public void HideAll()
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            setImageVisibility(i, false);
+        }
     }
 
 
@@ -102,11 +107,11 @@ public class CheckReady : MonoBehaviour
 
     private void setImageVisibility(int playerIndex, bool visible)
     {
-        images[playerIndex].gameObject.SetActive(visible);
+        // images[playerIndex].gameObject.SetActive(visible);
 
-        //Color currColor = images[playerIndex].color;
-        //currColor.a = visible ? 1.0f : 0.0f;
-        //images[playerIndex].color = currColor;
+        Color currColor = images[playerIndex].color;
+        currColor.a = visible ? 1.0f : 0.0f;
+        images[playerIndex].color = currColor;
     }
 
 }

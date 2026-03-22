@@ -333,6 +333,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 1009438867307146634, guid: 26c2be5c4a4a5bf42b2cb7f7f000f7d3, type: 3}
   m_PrefabInstance: {fileID: 302006417}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &302006419 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7055456923762184169, guid: 26c2be5c4a4a5bf42b2cb7f7f000f7d3, type: 3}
+  m_PrefabInstance: {fileID: 302006417}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0791b015903e072459f39693464b8b99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
 --- !u!1 &402673950
 GameObject:
   m_ObjectHideFlags: 0
@@ -933,6 +944,7 @@ MonoBehaviour:
   - P.S. Ties are broken in favor of whoever replied faster. So be quick with your
     thumbs!
   tutorialText: {fileID: 402673950}
+  checkReady: {fileID: 302006419}
 --- !u!1 &717685806
 GameObject:
   m_ObjectHideFlags: 0

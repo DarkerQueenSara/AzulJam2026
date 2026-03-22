@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using BuzzControllerSystem;
 using TMPro;
-using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -74,14 +73,19 @@ public class MainSceneManager : MonoBehaviour
     private int _currentScore = 0;
     private int _currentVoteTarget = -1;
 
+    private int _betsThisRound = 0;
+    private bool _betsExist = false;
+    private bool _roundDone = false;
+    private bool _advanceCalled = false;
+
     private static string NumToColor(int i)
     {
         return i switch
         {
-            1 => "Blue",
-            2 => "Orange",
-            3 => "Green",
-            4 => "Yellow",
+            0 => "Blue",
+            1 => "Orange",
+            2 => "Green",
+            3 => "Yellow",
             _ => ""
         };
     }
@@ -92,6 +96,7 @@ public class MainSceneManager : MonoBehaviour
         _scores = new int[4];
         _voted = new bool[4];
         _canBet = new bool[4];
+        _bets = new List<KeyValuePair<int, KeyValuePair<int, bool>>>();
         _votes = new List<KeyValuePair<int, int>>();
         _deadPlayers = new bool[4];
         _readyPlayers = new bool[4];
@@ -124,93 +129,69 @@ public class MainSceneManager : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
+
+        if (_recentlyDeceased.Count() == _betsThisRound && _roundDone && !_advanceCalled)
+        {
+            AdvanceToDiscussion();
+        }
+
         if (_votingActive)
         {
             if (_votes.Count == 4)
             {
                 _votingActive = false;
-                DisplayResults();
+                StartCoroutine(DisplayResults(1.0f));
             }
 
-            //Update Player 1
-            if (!_voted[0])
-            {
-                for (int i = 1; i <= 4; i++)
-                {
-                    if (_buzzInput.GetButtonDown(0, (BuzzInput.BuzzButton)i))
-                    {
-                        _votes.Add(new KeyValuePair<int, int>(0, i));
-                        _voted[0] = true;
-                        AddVote(_votes.Count -1, i);
-                    }
-                }
-            }
-
-            //Update Player 2
-            if (!_voted[1])
-            {
-                for (int i = 1; i <= 4; i++)
-                {
-                    if (_buzzInput.GetButtonDown(1, (BuzzInput.BuzzButton)i))
-                    {
-                        _votes.Add(new KeyValuePair<int, int>(1, i));
-                        _voted[1] = true;
-                        AddVote(_votes.Count - 1, i);
-                    }
-                }
-            }
-
-            //Update Player 3
-            if (!_voted[2]) {
-                for (int i = 1; i <= 4; i++)
-                {
-                    if (_buzzInput.GetButtonDown(2, (BuzzInput.BuzzButton)i))
-                    {
-                        _votes.Add(new KeyValuePair<int, int>(2, i));
-                        _voted[2] = true;
-                        AddVote(_votes.Count - 1, i);
-                    }
-                }
-            }
-
-            //Update Player 4
-            if (!_voted[3])
-            {
-                for (int i = 1; i <= 4; i++)
-                {
-                    if (_buzzInput.GetButtonDown(3, (BuzzInput.BuzzButton)i))
-                    {
-                        _votes.Add(new KeyValuePair<int, int>(3, i));
-                        _voted[3] = true;
-                        AddVote(_votes.Count - 1, i);
-                    }
-                }
-            }
-        }
-        
-        if (_bettingActive)
-        {
-            //Update Player 1
+            //Update Player p [0..3]
             for (int p = 0; p <= 3; p++)
             {
-                if (_canBet[p] && _currentBetter == p)
+                if (!_voted[p])
                 {
                     for (int i = 1; i <= 4; i++)
                     {
                         if (_buzzInput.GetButtonDown(p, (BuzzInput.BuzzButton)i))
                         {
+                            _votes.Add(new KeyValuePair<int, int>(p, i - 1));
+                            _voted[p] = true;
+                            AddVote(_votes.Count() - 1, i - 1);
+                        }
+                    }
+                }
+            }
+
+        }
+        
+        if (_bettingActive)
+        {
+            //Debug.Log("Betting active");
+            //Update Player p
+            for (int p = 0; p <= 3; p++)
+            {
+                //Debug.Log($"Checking player {p} for betting, canBet: {_canBet[p]}, currentBetter: {_currentBetter}");
+                if (_canBet[p] && _currentBetter == p)
+                {
+                    for (int i = 1; i <= 4; i++)
+                    {
+                        //Debug.Log("Entrou no ciclo");
+                        if (_buzzInput.GetButtonDown(p, (BuzzInput.BuzzButton)i))
+                        {
+                            Debug.Log($"current bet target = {_currentBetTarget}  |  {!_deadPlayers[i - 1]}   |   {i != p+1}  (i={i}, p={p}, p+1={p+1})   |   {_currentBetTarget == -1}");
                             if (!_deadPlayers[i - 1] && i != p+1 && _currentBetTarget == -1)
                             {
+                                Debug.Log($"Player {p} bet on player {i - 1}");
                                 _currentBetTarget = i - 1;
-                                StartCoroutine(waitForBetType(3.0f));
+                                StartCoroutine(waitForBetType(0.0f));
                             }
                             else if (_currentBetTarget >= 0)
                             {
+                                Debug.Log($"Player {p} bet on player {i-1} on type {i > 2}");
                                 _currentBetType = i > 2;
                                 _bets.Add(
                                     new KeyValuePair<int, KeyValuePair<int, bool>>(p,
                                         new KeyValuePair<int, bool>(_currentBetTarget, _currentBetType)));
-
+                                waitForNextBeter(1.0f);
+                                _betsThisRound++;
                             }
                         }
                     }
@@ -227,6 +208,8 @@ public class MainSceneManager : MonoBehaviour
 
     private void CleanUp()
     {
+        Debug.Log($"Entrou no CleanUp");
+        checkReady.HideAll();
         _recentlyDeceased.Clear();
         _votes.Clear();
         _voted = Enumerable.Repeat(false, 4).ToArray();
@@ -248,13 +231,19 @@ public class MainSceneManager : MonoBehaviour
         _currentVoteTarget = -1;
         _currentScore = 0;
         _currentQuestion = -1;
+
+        _betsThisRound = 0;
+        _betsExist = false;
+        _roundDone = false;
+        _advanceCalled = false;
         NewRound();
     }
     
     private void NewRound()
     {
+        Debug.Log($"Entrou no NewRound");
         // random question, e guardar
-        _currentQuestion = UnityEngine.Random.Range(0, 3);
+        _currentQuestion = UnityEngine.Random.Range(0, 3) * 0 + 2;
         if (_currentQuestion < 2)
         {
             _currentScore = UnityEngine.Random.Range(1, 4);
@@ -264,7 +253,7 @@ public class MainSceneManager : MonoBehaviour
         }
         else
         {
-            _currentVoteTarget = UnityEngine.Random.Range(0, 5);
+            _currentVoteTarget = UnityEngine.Random.Range(0, 4);
             commandText.text = questions[_currentQuestion]
                     .Replace("Y", NumToColor(_currentVoteTarget));
         }
@@ -272,11 +261,12 @@ public class MainSceneManager : MonoBehaviour
         commandText.gameObject.SetActive(true);
         _commandTextAnimator.Rebind();
         _commandTextAnimator.Update(0f);
-        StartCoroutine(EnableVoting(3));
+        StartCoroutine(EnableVoting(0f));
     }
 
     private IEnumerator EnableVoting(float seconds)
     {
+        Debug.Log($"Entrou no EnableVoting");
         yield return new WaitForSeconds(seconds);
         votesHolder.SetActive(true);
         _votingActive = true;
@@ -284,19 +274,21 @@ public class MainSceneManager : MonoBehaviour
 
     private void AddVote(int numberVote, int value)
     {
+        Debug.Log($"Entrou no AddVote com numberVote {numberVote} e value {value}");
         _votesAnimators[numberVote].transform.gameObject.SetActive(true);
         _votesAnimators[numberVote].Rebind();
         _votesAnimators[numberVote].Update(0);
-
         _votesText[numberVote].text = NumToColor(value);
     }
     
-    private void DisplayResults()
+    private IEnumerator DisplayResults(float seconds)
     {
+        Debug.Log($"Entrou no DisplayResults");
+        yield return new WaitForSeconds(seconds);
         for (int i = 0; i < _votesAnimators.Count; i++)
         {
             _votesAnimators[i].SetTrigger(Reveal);
-            StartCoroutine(ShowVote(3, i));
+            StartCoroutine(ShowVote(1.0f, i));
         }
 
         List<int> votesCount = _votes.Select(t => t.Value).ToList();
@@ -304,18 +296,20 @@ public class MainSceneManager : MonoBehaviour
         int winner = votesCount.GroupBy(i=>i).OrderByDescending(grp=>grp.Count())
             .Select(grp=>grp.Key).First();
         
-        StartCoroutine(ShowWinner(3, winner, votesCount.Count(vote => vote == winner)));
+        StartCoroutine(ShowWinner(5.0f, winner, votesCount.Count(vote => vote == winner)));
 
     }
     
     private IEnumerator ShowVote(float seconds, int index)
     {
+        Debug.Log($"Entrou no ShowVote com index {index}");
         yield return new WaitForSeconds(seconds);
         _votesText[index].gameObject.SetActive(true);
     }
     
     private IEnumerator ShowWinner(float seconds, int winner, int numVotes)
     {
+        Debug.Log($"Entrou no ShowWinner com winner {winner} e numVotes {numVotes}");
         yield return new WaitForSeconds(seconds);
 
         for (int i = 0; i < _votes.Count; i++)
@@ -344,13 +338,15 @@ public class MainSceneManager : MonoBehaviour
 
     private void ScoreVote(int winner, int numVotes)
     {
+        Debug.Log($"Entrou no ScoreVote com winner {winner} e numVotes {numVotes}");
+        
         switch (_currentQuestion)
         {
             case 0:
-                _scores[winner] += _currentScore;
+                _scores[winner] = Math.Max(0, _scores[winner] + _currentScore);
                 break;
             case 1:
-                _scores[winner] -= _currentScore;
+                _scores[winner] = Math.Max(0, _scores[winner] - _currentScore);
                 break;
             case 2:
                 if (numVotes == 4 && winner == _currentVoteTarget)
@@ -362,15 +358,22 @@ public class MainSceneManager : MonoBehaviour
                 } else {
                     for (int i = 0; i < 4; i++)
                     {
-                        _scores[i] -= 1;
+                        _scores[i] = Math.Max(0, _scores[i] - 1);
                     }
                 }
                 break;
+        }
+
+        for (int i = 0; i < 4; i++)
+        {
+            scoreTexts[i].text = _scores[i].ToString();
         }
     }
 
     private void CheckDead()
     {
+        Debug.Log($"Entrou no CheckDead");
+
         for (int i = 0; i < _scores.Length; i++)
         {
             if (!_deadPlayers[i] && _scores[i] >= deathCap)
@@ -382,6 +385,7 @@ public class MainSceneManager : MonoBehaviour
             }
         }
 
+        _betsExist = _recentlyDeceased.Count() > 0;
 
         if (_deadPlayers.Count(p => p) >= 3)
         {
@@ -407,7 +411,7 @@ public class MainSceneManager : MonoBehaviour
 
             if (newDeads.All(p => p))
             {
-                StartCoroutine(DisplayAllLose(3.0f));
+                StartCoroutine(DisplayAllLose(0.0f));
             }
             else
             {
@@ -424,7 +428,7 @@ public class MainSceneManager : MonoBehaviour
                         }
                     }
                 }
-                StartCoroutine(DisplayWinner(3.0f, highestIndex));
+                StartCoroutine(DisplayWinner(0.0f, highestIndex));
             }
             checkReady.RequestAllPlayerPress(CheckReady.Order.Arbitrary, () =>
             {
@@ -435,27 +439,32 @@ public class MainSceneManager : MonoBehaviour
 
     private void PlaceBetTargets()
     {
+        Debug.Log($"Entrou no PlaceBetTargets com {_recentlyDeceased.Count} recentemente falecidos");
+        _roundDone = true;
+        votesHolder.SetActive(false);
+
         //nao pode ser só ciclo, tem de haver mecanismo para ser só um a dar bet de cada vez
         for (int i = 0; i < _recentlyDeceased.Count; i++)
         {
             while (!_bettingActive)
             {
-                _canBet[i] = true;
+                Debug.Log($"Entrou no Enabling do Bet para o jogador {i}");
+                _canBet[_recentlyDeceased[i]] = true;
                 commandText.gameObject.SetActive(false);
                 _commandTextAnimator.Rebind();
                 _commandTextAnimator.Update(0);
                 commandText.text = betTargetString.Replace("X", NumToColor(_recentlyDeceased[i]));
                 commandText.gameObject.SetActive(true);
                 _bettingActive = true;
-                _currentBetter = i;
+                _currentBetter = _recentlyDeceased[i];
+                _currentBetTarget = -1;
             }
         }
-
-        StartCoroutine(AdvanceToDiscussion(1.0f));
     }
     
     private void PlaceBetType()
     {
+        Debug.Log($"Entrou no PlaceBetType");
         //nao pode ser só ciclo, tem de haver mecanismo para ser só um a dar bet de cada vez
         commandText.gameObject.SetActive(false);
         _commandTextAnimator.Rebind();
@@ -467,6 +476,7 @@ public class MainSceneManager : MonoBehaviour
 
     private IEnumerator waitForBetType(float seconds)
     {
+        Debug.Log($"Entrou no waitForBetType");
         _canBet[_currentBetter] = false;
         yield return new WaitForSeconds(seconds);
         PlaceBetType();
@@ -476,27 +486,30 @@ public class MainSceneManager : MonoBehaviour
 
     private IEnumerator waitForNextBeter(float seconds)
     {
+        Debug.Log($"Entrou no waitForNextBeter");
         yield return new WaitForSeconds(seconds);
         _bettingActive = false;
     }
 
-    private IEnumerator AdvanceToDiscussion(float seconds)
+    private void AdvanceToDiscussion()
     {
-        yield return new WaitForSeconds(seconds);
+        Debug.Log($"Entrou no AdvanceToDiscussion");
+        _advanceCalled = true;
 
         //start new round when all ready
+        votesHolder.SetActive(false);
         commandText.gameObject.SetActive(false);
         _commandTextAnimator.Rebind();
         _commandTextAnimator.Update(0);
         commandText.text = discussionString;
         commandText.gameObject.SetActive(true);
 
-        yield return new WaitForSeconds(seconds);
         checkReady.RequestAllPlayerPress(CheckReady.Order.Arbitrary, CleanUp);
     }
 
     private IEnumerator DisplayAllLose(float seconds)
     {
+        Debug.Log($"Entrou no DisplayAllLose");
         yield return new WaitForSeconds(seconds);
         commandText.gameObject.SetActive(false);
         _commandTextAnimator.Rebind();
@@ -508,6 +521,7 @@ public class MainSceneManager : MonoBehaviour
 
     private IEnumerator DisplayWinner(float seconds, int winner)
     {
+        Debug.Log($"Entrou no DisplayWinner com winner {winner}");
         yield return new WaitForSeconds(seconds);
         commandText.gameObject.SetActive(false);
         _commandTextAnimator.Rebind();

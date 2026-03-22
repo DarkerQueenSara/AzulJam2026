@@ -176,7 +176,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 10
+  m_text: 0
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: b9f547bf0ba31574e8f099f7cc85af94, type: 2}
   m_sharedMaterial: {fileID: -1089644694369174432, guid: b9f547bf0ba31574e8f099f7cc85af94, type: 2}
@@ -679,7 +679,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 5.296875
+  orthographic size: 2.9375
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -1047,6 +1047,7 @@ GameObject:
   - component: {fileID: 695767666}
   - component: {fileID: 695767665}
   - component: {fileID: 695767669}
+  - component: {fileID: 695767670}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -1154,7 +1155,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69d90062bcde9c649b712a6fd64ef0e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MainSceneManager
-  deathCap: 10
+  deathCap: 2
   discussionString: Discuss amongst yourselves. When done, press the red button.
   betTargetString: Witch X, who do you want to bet on?
   betTypeString: What type of bet? Press Blue/Orange to vote on their demise, or
@@ -1177,6 +1178,21 @@ MonoBehaviour:
   - Which witch should lose X pieceZ of evidence?
   - If witch Y wins unanimously, they get 2 pieces of evidence, but everyone else
     gets 1 too. Otherwise everyone loses 1.
+--- !u!114 &695767670
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 695767664}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 58bc32c909fc96545a58cb5ca6e2aac9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BuzzControllerSystem.BuzzInput
+  slowSequenceTime: 1
+  normalSequenceTime: 0.4
+  fastSequenceTime: 0.1
 --- !u!1 &717685806
 GameObject:
   m_ObjectHideFlags: 0
@@ -1304,7 +1320,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1444,7 +1460,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 10
+  m_text: 0
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: b9f547bf0ba31574e8f099f7cc85af94, type: 2}
   m_sharedMaterial: {fileID: -1089644694369174432, guid: b9f547bf0ba31574e8f099f7cc85af94, type: 2}
@@ -1788,7 +1804,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1892,7 +1908,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 10
+  m_text: 0
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: b9f547bf0ba31574e8f099f7cc85af94, type: 2}
   m_sharedMaterial: {fileID: -1089644694369174432, guid: b9f547bf0ba31574e8f099f7cc85af94, type: 2}
@@ -2029,7 +2045,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 10
+  m_text: 0
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: b9f547bf0ba31574e8f099f7cc85af94, type: 2}
   m_sharedMaterial: {fileID: -1089644694369174432, guid: b9f547bf0ba31574e8f099f7cc85af94, type: 2}
@@ -2495,7 +2511,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1

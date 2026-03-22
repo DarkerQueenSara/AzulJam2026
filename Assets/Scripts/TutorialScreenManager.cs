@@ -12,6 +12,7 @@ public class TutorialScreenManager : MonoBehaviour
 
     private void Start()
     {
+        checkReady.onAllPlayersHavePressed.AddListener(NextSentence);
         checkReady.RequestAllPlayerPress(CheckReady.Order.Arbitrary);
     }
 
