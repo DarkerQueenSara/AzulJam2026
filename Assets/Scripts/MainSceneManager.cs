@@ -1,12 +1,13 @@
+using BuzzControllerSystem;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using BuzzControllerSystem;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.Windows;
 // ReSharper disable InvertIf
 // ReSharper disable SuggestVarOrType_Elsewhere
 
@@ -194,6 +195,8 @@ public class MainSceneManager : MonoBehaviour
                                     new KeyValuePair<int, KeyValuePair<int, bool>>(p,
                                         new KeyValuePair<int, bool>(_currentBetTarget, _currentBetType)));
                                 waitForNextBeter(1.0f);
+                                _canBet[p] = false;
+                                _currentBetter = -1;
                                 _betsThisRound++;
                             }
                         }
@@ -232,6 +235,8 @@ public class MainSceneManager : MonoBehaviour
         _currentQuestion = -1;
         _currentLoss = 0;
         
+
+
         _betsThisRound = 0;
         _betsExist = false;
         _roundDone = false;
@@ -285,7 +290,12 @@ public class MainSceneManager : MonoBehaviour
     private void AddVote(int numberVote, int value)
     {
         Debug.Log($"Entrou no AddVote com numberVote {numberVote} e value {value}");
+        _votesAnimators[numberVote].Rebind();
+        _votesAnimators[numberVote].Update(0);
         _votesAnimators[numberVote].gameObject.SetActive(false);
+        _votesAnimators[numberVote].Rebind();
+        _votesAnimators[numberVote].Update(0);
+        _votesAnimators[numberVote].gameObject.SetActive(true);
         _votesAnimators[numberVote].Rebind();
         _votesAnimators[numberVote].Update(0);
         _votesAnimators[numberVote].gameObject.SetActive(true);
@@ -399,7 +409,7 @@ public class MainSceneManager : MonoBehaviour
             {
                 _recentlyDeceased.Add(i);
                 _deadPlayers[i] = true;
-                _votesText[i].color = Color.red;
+                scoreTexts[i].color = Color.red;
             }
         }
 

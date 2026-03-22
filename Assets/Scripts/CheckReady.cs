@@ -74,11 +74,11 @@ public class CheckReady : MonoBehaviour
 
                     if (_currentChecking == 4)
                     {
-                        for (int i = 0; i < 4; i++)
-                        {
-                            input.SetLight(i, false);
-                        }
-                        
+                        input.SetLight(0, false);
+                        input.SetLight(1, false);
+                        input.SetLight(2, false);
+                        input.SetLight(3, false);
+
                         onAllPlayersHavePressed.Invoke();
                         _callback?.Invoke();
                         _callback = null;
@@ -99,11 +99,11 @@ public class CheckReady : MonoBehaviour
                 }
                 if (_playerPressed.All(p => p))
                 {
-                    for (int i = 0; i < 4; i++)
-                    {
-                        input.SetLight(i, false);
-                    }
-                    
+                    input.SetLight(0, false);
+                    input.SetLight(1, false);
+                    input.SetLight(2, false);
+                    input.SetLight(3, false);
+
                     onAllPlayersHavePressed.Invoke();
                     _callback?.Invoke();
                     _callback = null;
