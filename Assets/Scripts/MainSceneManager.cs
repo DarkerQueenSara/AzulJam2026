@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using BuzzControllerSystem;
 using TMPro;
-using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -124,6 +123,8 @@ public class MainSceneManager : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
+        Debug.Log("=== UPDATE ===");
+
         if (_votingActive)
         {
             if (_votes.Count == 4)
@@ -132,60 +133,23 @@ public class MainSceneManager : MonoBehaviour
                 DisplayResults();
             }
 
-            //Update Player 1
-            if (!_voted[0])
+            //Update Player p [0..3]
+            for (int p = 0; p <= 3; p++)
             {
-                for (int i = 1; i <= 4; i++)
+                if (!_voted[p])
                 {
-                    if (_buzzInput.GetButtonDown(0, (BuzzInput.BuzzButton)i))
+                    for (int i = 1; i <= 4; i++)
                     {
-                        _votes.Add(new KeyValuePair<int, int>(0, i));
-                        _voted[0] = true;
-                        AddVote(_votes.Count -1, i);
+                        if (_buzzInput.GetButtonDown(p, (BuzzInput.BuzzButton)i))
+                        {
+                            _votes.Add(new KeyValuePair<int, int>(p, i - 1));
+                            _voted[p] = true;
+                            AddVote(_votes.Count - 1, i - 1);
+                        }
                     }
                 }
             }
 
-            //Update Player 2
-            if (!_voted[1])
-            {
-                for (int i = 1; i <= 4; i++)
-                {
-                    if (_buzzInput.GetButtonDown(1, (BuzzInput.BuzzButton)i))
-                    {
-                        _votes.Add(new KeyValuePair<int, int>(1, i));
-                        _voted[1] = true;
-                        AddVote(_votes.Count - 1, i);
-                    }
-                }
-            }
-
-            //Update Player 3
-            if (!_voted[2]) {
-                for (int i = 1; i <= 4; i++)
-                {
-                    if (_buzzInput.GetButtonDown(2, (BuzzInput.BuzzButton)i))
-                    {
-                        _votes.Add(new KeyValuePair<int, int>(2, i));
-                        _voted[2] = true;
-                        AddVote(_votes.Count - 1, i);
-                    }
-                }
-            }
-
-            //Update Player 4
-            if (!_voted[3])
-            {
-                for (int i = 1; i <= 4; i++)
-                {
-                    if (_buzzInput.GetButtonDown(3, (BuzzInput.BuzzButton)i))
-                    {
-                        _votes.Add(new KeyValuePair<int, int>(3, i));
-                        _voted[3] = true;
-                        AddVote(_votes.Count - 1, i);
-                    }
-                }
-            }
         }
         
         if (_bettingActive)

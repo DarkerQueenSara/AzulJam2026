@@ -102,11 +102,11 @@ public class CheckReady : MonoBehaviour
 
     private void setImageVisibility(int playerIndex, bool visible)
     {
-        images[playerIndex].gameObject.SetActive(visible);
+        // images[playerIndex].gameObject.SetActive(visible);
 
-        //Color currColor = images[playerIndex].color;
-        //currColor.a = visible ? 1.0f : 0.0f;
-        //images[playerIndex].color = currColor;
+        Color currColor = images[playerIndex].color;
+        currColor.a = visible ? 1.0f : 0.0f;
+        images[playerIndex].color = currColor;
     }
 
 }
