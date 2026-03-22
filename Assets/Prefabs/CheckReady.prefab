@@ -65,7 +65,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 6286865408294763098, guid: bd785ce3d9f344447bd5d3e8e7a2ae8f, type: 3}
+  m_Sprite: {fileID: 6286865408294763098, guid: 757521ff55183334aa665262f5681ca6, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -140,7 +140,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -3593999099801096806, guid: bd785ce3d9f344447bd5d3e8e7a2ae8f, type: 3}
+  m_Sprite: {fileID: -3593999099801096806, guid: 757521ff55183334aa665262f5681ca6, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -215,7 +215,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 8521753015154073908, guid: bd785ce3d9f344447bd5d3e8e7a2ae8f, type: 3}
+  m_Sprite: {fileID: 8521753015154073908, guid: 757521ff55183334aa665262f5681ca6, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -290,7 +290,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -7577911279421501024, guid: bd785ce3d9f344447bd5d3e8e7a2ae8f, type: 3}
+  m_Sprite: {fileID: -7577911279421501024, guid: 757521ff55183334aa665262f5681ca6, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -339,8 +339,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -25}
-  m_SizeDelta: {x: 0, y: -50}
+  m_AnchoredPosition: {x: 0, y: -25.000002}
+  m_SizeDelta: {x: 0, y: -49.999996}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &3311927600667569585
 MonoBehaviour:
@@ -391,11 +391,10 @@ MonoBehaviour:
   - {r: 1, g: 0.49019608, b: 0, a: 1}
   - {r: 0, g: 0.7529412, b: 0.21960784, a: 1}
   - {r: 0.9647059, g: 1, b: 0, a: 1}
-  joinSceneManager: {fileID: 0}
-  requestedPlayerPress:
+  onAskForPlayerPress:
     m_PersistentCalls:
       m_Calls: []
-  allJoined:
+  onAllPlayersHavePressed:
     m_PersistentCalls:
       m_Calls: []
 --- !u!114 &7147410131343593916

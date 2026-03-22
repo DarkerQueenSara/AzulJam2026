@@ -209,6 +209,7 @@ public class MainSceneManager : MonoBehaviour
 
         foreach (TextMeshProUGUI text in _votesText)
         {
+            text.gameObject.SetActive(false);
             text.text = "";
             text.gameObject.SetActive(false);
         }
@@ -260,7 +261,6 @@ public class MainSceneManager : MonoBehaviour
     {
         Debug.Log($"Entrou no EnableVoting");
         yield return new WaitForSeconds(seconds);
-        votesHolder.SetActive(true);
         _votingActive = true;
         skulls.gameObject.SetActive(true);
     }
@@ -494,9 +494,8 @@ public class MainSceneManager : MonoBehaviour
     {
         Debug.Log($"Entrou no AdvanceToDiscussion");
         _advanceCalled = true;
-
+        
         //start new round when all ready
-        votesHolder.SetActive(false);
         commandText.gameObject.SetActive(false);
         _commandTextAnimator.Rebind();
         _commandTextAnimator.Update(0);
