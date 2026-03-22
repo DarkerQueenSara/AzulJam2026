@@ -127,7 +127,7 @@ namespace BuzzControllerSystem
                     break;
             }
             lights[player] = toggle;
-            device.ExecuteCommand(ref outputReport);
+            device?.ExecuteCommand(ref outputReport);
         }
 
         public void StartLightSequence(BuzzLightSequence lightSequence)
@@ -162,7 +162,7 @@ namespace BuzzControllerSystem
         {
             CancelInvoke();
             var outputReport = BuzzOutputReport.Create(false, false, false, false);
-            device.ExecuteCommand(ref outputReport);
+            device?.ExecuteCommand(ref outputReport);
 
             for (int i = 0; i < 4; i++)
             {
@@ -173,7 +173,7 @@ namespace BuzzControllerSystem
         void Flash()
         {
             var outputReport = BuzzOutputReport.Create(!lights[0], !lights[1], !lights[2], !lights[3]);
-            device.ExecuteCommand(ref outputReport);
+            device?.ExecuteCommand(ref outputReport);
 
             for (int i = 0; i < lights.Length; i++)
             {
@@ -239,7 +239,7 @@ namespace BuzzControllerSystem
         private void OnApplicationQuit()
         {
             var outputReport = BuzzOutputReport.Create(false, false, false, false);
-            device.ExecuteCommand(ref outputReport);
+            device?.ExecuteCommand(ref outputReport);
         }
     }
 }

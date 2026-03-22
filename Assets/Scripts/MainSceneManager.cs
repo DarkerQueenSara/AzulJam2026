@@ -242,29 +242,37 @@ public class MainSceneManager : MonoBehaviour
     {
         Debug.Log($"Entrou no NewRound");
         _currentQuestion = UnityEngine.Random.Range(0, 4);
-        if (_currentQuestion < 2)
+        _buzzInput.StopLightSequence();
+        _buzzInput.SetLight(0, false);
+        _buzzInput.SetLight(1, false);
+        _buzzInput.SetLight(2, false);
+        _buzzInput.SetLight(3, false);
+        
+        switch (_currentQuestion)
         {
-            var auxList = _currentQuestion == 0 ? pointsToGain : pointsToLose;
+            case < 2:
+            {
+                var auxList = _currentQuestion == 0 ? pointsToGain : pointsToLose;
             
-            _currentScore = auxList[UnityEngine.Random.Range(0, auxList.Count)];
-            commandText.text = questions[_currentQuestion]
-                .Replace("X", _currentScore.ToString())
-                .Replace("Z", (_currentScore > 1) ? "s" : "");
-        }
-        else if (_currentQuestion == 2)
-        {
-            _currentVoteTarget = UnityEngine.Random.Range(0, 4);
-            commandText.text = questions[_currentQuestion]
+                _currentScore = auxList[UnityEngine.Random.Range(0, auxList.Count)];
+                commandText.text = questions[_currentQuestion]
+                    .Replace("X", _currentScore.ToString())
+                    .Replace("Z", (_currentScore > 1) ? "s" : "");
+                break;
+            }
+            case 2:
+                _currentVoteTarget = UnityEngine.Random.Range(0, 4);
+                commandText.text = questions[_currentQuestion]
                     .Replace("Y", NumToColor(_currentVoteTarget));
-        }
-        else if (_currentQuestion == 3)
-        {
-            _currentScore = pointsToGain[UnityEngine.Random.Range(0, pointsToGain.Count)];
-            _currentLoss = pointsToLose[UnityEngine.Random.Range(0, pointsToLose.Count)];
-            commandText.text = questions[_currentQuestion]
-                .Replace("X", _currentScore.ToString())
-                .Replace("O", _currentLoss.ToString())
-                .Replace("Z", (_currentScore > 1) ? "s" : "");
+                break;
+            case 3:
+                _currentScore = pointsToGain[UnityEngine.Random.Range(0, pointsToGain.Count)];
+                _currentLoss = pointsToLose[UnityEngine.Random.Range(0, pointsToLose.Count)];
+                commandText.text = questions[_currentQuestion]
+                    .Replace("X", _currentScore.ToString())
+                    .Replace("O", _currentLoss.ToString())
+                    .Replace("Z", (_currentScore > 1) ? "s" : "");
+                break;
         }
         // preencher com nrs random e/ou target random e guardar
         commandText.gameObject.SetActive(true);

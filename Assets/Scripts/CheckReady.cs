@@ -38,6 +38,11 @@ public class CheckReady : MonoBehaviour
     public void RequestAllPlayerPress(Order order, AllPlayersPressedCallback callback = null)
     {
         HideAll();
+        
+        input.SetLight(0, false);
+        input.SetLight(1, false);
+        input.SetLight(2, false);
+        input.SetLight(3, false);
 
         this._order = order;
         _currentChecking = 0;
