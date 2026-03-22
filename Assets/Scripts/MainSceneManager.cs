@@ -27,9 +27,8 @@ public class MainSceneManager : MonoBehaviour
     public string winnerString;
 
     public List<TextMeshProUGUI> scoreTexts;
-    public List<Image> aliveImages;
-    public List<Image> deadImages;
-
+    public Image skulls;
+    
     public TextMeshProUGUI commandText;
     private Animator _commandTextAnimator;
 
@@ -58,7 +57,6 @@ public class MainSceneManager : MonoBehaviour
     private bool[] _canBet;
     private int _currentBetter;
     private bool[] _deadPlayers;
-    private bool[] _readyPlayers;
 
     private int _currentBetTarget;
     private bool _currentBetType;
@@ -99,8 +97,8 @@ public class MainSceneManager : MonoBehaviour
         _bets = new List<KeyValuePair<int, KeyValuePair<int, bool>>>();
         _votes = new List<KeyValuePair<int, int>>();
         _deadPlayers = new bool[4];
-        _readyPlayers = new bool[4];
         _recentlyDeceased = new List<int>();
+        skulls.gameObject.SetActive(false);
 
         for (int i = 0; i < 4; i++)
         {
@@ -139,6 +137,7 @@ public class MainSceneManager : MonoBehaviour
         {
             if (_votes.Count == 4)
             {
+                skulls.gameObject.SetActive(false);
                 _votingActive = false;
                 StartCoroutine(DisplayResults(1.0f));
             }
@@ -200,12 +199,6 @@ public class MainSceneManager : MonoBehaviour
 
         }
     }
-    
-    //Logic TODO
-    //get random question
-
-    //apply score
-
     private void CleanUp()
     {
         Debug.Log($"Entrou no CleanUp");
@@ -242,8 +235,7 @@ public class MainSceneManager : MonoBehaviour
     private void NewRound()
     {
         Debug.Log($"Entrou no NewRound");
-        // random question, e guardar
-        _currentQuestion = UnityEngine.Random.Range(0, 3) * 0 + 2;
+        _currentQuestion = UnityEngine.Random.Range(0, 3);
         if (_currentQuestion < 2)
         {
             _currentScore = UnityEngine.Random.Range(1, 4);
@@ -270,6 +262,7 @@ public class MainSceneManager : MonoBehaviour
         yield return new WaitForSeconds(seconds);
         votesHolder.SetActive(true);
         _votingActive = true;
+        skulls.gameObject.SetActive(true);
     }
 
     private void AddVote(int numberVote, int value)
@@ -288,7 +281,7 @@ public class MainSceneManager : MonoBehaviour
         for (int i = 0; i < _votesAnimators.Count; i++)
         {
             _votesAnimators[i].SetTrigger(Reveal);
-            StartCoroutine(ShowVote(1.0f, i));
+            StartCoroutine(ShowVote(0.5f, i));
         }
 
         List<int> votesCount = _votes.Select(t => t.Value).ToList();
@@ -296,7 +289,7 @@ public class MainSceneManager : MonoBehaviour
         int winner = votesCount.GroupBy(i=>i).OrderByDescending(grp=>grp.Count())
             .Select(grp=>grp.Key).First();
         
-        StartCoroutine(ShowWinner(5.0f, winner, votesCount.Count(vote => vote == winner)));
+        StartCoroutine(ShowWinner(2.0f, winner, votesCount.Count(vote => vote == winner)));
 
     }
     
@@ -320,18 +313,18 @@ public class MainSceneManager : MonoBehaviour
             }
         }
 
-        yield return new WaitForSeconds(seconds);
+        yield return new WaitForSeconds(1.0f);
 
         ScoreVote(winner, numVotes);
 
         // apply score to people
 
-        yield return new WaitForSeconds(seconds);
+        yield return new WaitForSeconds(0);
         CheckDead();
 
         if (!_gameOver)
         {
-            yield return new WaitForSeconds(seconds);
+            yield return new WaitForSeconds(0);
             PlaceBetTargets();
         }
     }
@@ -380,12 +373,11 @@ public class MainSceneManager : MonoBehaviour
             {
                 _recentlyDeceased.Add(i);
                 _deadPlayers[i] = true;
-                // aliveImages[i].gameObject.SetActive(false);
-                // deadImages[i].gameObject.SetActive(true);
+                _votesText[i].color = Color.red;
             }
         }
 
-        _betsExist = _recentlyDeceased.Count() > 0;
+        _betsExist = _recentlyDeceased.Any();
 
         if (_deadPlayers.Count(p => p) >= 3)
         {
