@@ -96,6 +96,7 @@ public class MainSceneManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Start()
     {
+        checkReady.enabled = false;
         _scores = new int[4];
         _voted = new bool[4];
         _canBet = new bool[4];
