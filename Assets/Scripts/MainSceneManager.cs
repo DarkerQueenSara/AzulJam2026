@@ -250,13 +250,13 @@ public class MainSceneManager : MonoBehaviour
                 .Replace("X", _currentScore.ToString())
                 .Replace("Z", (_currentScore > 1) ? "s" : "");
         }
-        else if (_currentQuestion == 3)
+        else if (_currentQuestion == 2)
         {
             _currentVoteTarget = UnityEngine.Random.Range(0, 4);
             commandText.text = questions[_currentQuestion]
                     .Replace("Y", NumToColor(_currentVoteTarget));
         }
-        else
+        else if (_currentQuestion == 3)
         {
             _currentScore = pointsToGain[UnityEngine.Random.Range(0, pointsToGain.Count)];
             _currentLoss = pointsToLose[UnityEngine.Random.Range(0, pointsToLose.Count)];
@@ -459,8 +459,6 @@ public class MainSceneManager : MonoBehaviour
 
         foreach (var e in  _votesAnimators)
         {
-            e.Rebind();
-            e.Update(0);
             e.gameObject.SetActive(false);
         }
 
