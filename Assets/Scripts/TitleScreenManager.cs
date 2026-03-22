@@ -24,6 +24,7 @@ public class TitleScreenManager : MonoBehaviour
             if (buzzInput.GetButtonDown(player, startButton))
             {
                 //Load the next scene
+                buzzInput.StopLightSequence();
                 UnityEngine.SceneManagement.SceneManager.LoadScene(1);
             }
         }
