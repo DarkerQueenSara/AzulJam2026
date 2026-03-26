@@ -1,38 +1,36 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Assertions;
-using UnityEngine.UI;
 
 public class JoinSceneManager : MonoBehaviour
 {
-    public TextMeshProUGUI text;
     public string msgPlayerPress = "Player {0}, press the red button!";
     public string msgCountdown = "Starting in {0}...";
 
+    public TextMeshProUGUI text;
     public CheckReady checkReady;
 
-    void Start()
+    private void Start1()
     {
-        checkReady.onAskForPlayerPress.AddListener((int player) =>
-        {
+        checkReady.onAskForPlayerPress.AddListener(UpdateTextNextPlayer);
+        checkReady.RequestAllPlayersPress(inOrder: true, whenAllHavePressed: StartCountdown);
+        return;
+
+        void UpdateTextNextPlayer(int player) =>
             text.text = string.Format(msgPlayerPress, player + 1);
-        });
-
-        checkReady.onAllPlayersHavePressed.AddListener(() =>
-        {
+        
+        void StartCountdown() =>
             StartCoroutine(AllReadyCountdownCoro());
-        });
-
-        checkReady.RequestAllPlayerPress(CheckReady.Order.From1To4);
     }
+    
+    private static readonly YieldInstruction WaitOneSecond = new WaitForSeconds(1.0f);
 
-    IEnumerator AllReadyCountdownCoro()
+    private IEnumerator AllReadyCountdownCoro()
     {
-        for (int sec = 3; sec > 0; sec--)
+        for (var sec = 3; sec > 0; sec--)
         {
             text.text = string.Format(msgCountdown, sec);
-            yield return new WaitForSeconds(1.0f);
+            yield return WaitOneSecond;
         }
 
         text.text = "Starting now...";

@@ -1,6 +1,9 @@
 using BuzzControllerSystem;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -11,16 +14,15 @@ using UnityEngine.UI;
 [RequireComponent(typeof(BuzzInput))]
 public class CheckReady : MonoBehaviour
 {
-    public enum Order
+    private enum PollingState
     {
-        From1To4,
-        Arbitrary,
-        None
+        OrderingFrom1To4,
+        OrderingArbitrarily,
+        Idle
     }
-
+    
     public delegate void AllPlayersPressedCallback();
 
-    
     public BuzzInput input;
     public Image[] images;
     public Color[] playerColors;
@@ -29,106 +31,130 @@ public class CheckReady : MonoBehaviour
     public UnityEvent onAllPlayersHavePressed;
 
     // player presses bookkeeping
-    private Order _order;
+    private PollingState _pollingState;
     private int _currentChecking = 0;
-    private bool[] _playerPressed = new bool[4];
+    private readonly bool[] _playerPressed = new bool[4];
     private AllPlayersPressedCallback _callback;
+    private readonly AwaitableCompletionSource _awaitableCompletionSource = new AwaitableCompletionSource();
 
 
-    public void RequestAllPlayerPress(Order order, AllPlayersPressedCallback callback = null)
+    public void RequestAllPlayersPress(bool inOrder, AllPlayersPressedCallback whenAllHavePressed = null)
     {
-        HideAll();
+        _callback = whenAllHavePressed;
+
+        if (inOrder)
+        {
+            _pollingState = PollingState.OrderingFrom1To4;
+            _currentChecking = 0;
+            onAskForPlayerPress.Invoke(0);
+        }
+        else
+        {
+            _pollingState = PollingState.OrderingArbitrarily;
+            Array.Fill(_playerPressed, false);
+        }
         
-        input.SetLight(0, false);
-        input.SetLight(1, false);
-        input.SetLight(2, false);
-        input.SetLight(3, false);
-
-        this._order = order;
-        _currentChecking = 0;
-        _playerPressed = new bool[4];
-        _callback = callback;
-        onAskForPlayerPress.Invoke(0);
+        HideAllImages();
+        TurnOffAllLights();
     }
 
-    public void HideAll()
+    public Awaitable RequestAllPlayersPressAsync(bool inOrder)
     {
-        for (int i = 0; i < 4; i++)
+        _awaitableCompletionSource.Reset();
+        RequestAllPlayersPress(inOrder, whenAllHavePressed: _awaitableCompletionSource.SetResult);
+        return _awaitableCompletionSource.Awaitable;
+    }
+
+    public async System.Collections.Generic.IAsyncEnumerable<int> PlayersBuzzInOrderAsync()
+    {
+        for (var player = 0; player < 4; player++)
         {
-            setImageVisibility(i, false);
+            yield return player;
+            while (!input.GetButtonDown(player, BuzzInput.BuzzButton.Buzz))
+                await Awaitable.NextFrameAsync();
         }
     }
 
-
-    // Update is called once per frame
-    void Update()
+    public void TurnOffAllLights()
     {
-        switch (_order)
+        for (var player = 0; player < 4; player++)
+            input.SetLight(player, false);
+    }
+
+    public void HideAllImages()
+    {
+        for (var player = 0; player < 4; player++)
+            SetImageVisibility(player, false);
+    }
+
+    private void Update()
+    {
+        PollPlayersInSelectedOrder();
+    }
+
+    #region Polling player readiness in selected order
+
+    private void PollPlayersInSelectedOrder()
+    {
+        switch (_pollingState)
         {
-            case Order.From1To4:
-                Assert.IsTrue(_currentChecking >= 0 && _currentChecking < 4,
-                    $"Current checking index {_currentChecking} is out of bounds!");
-
-                if (input.GetButtonDown(_currentChecking, BuzzInput.BuzzButton.Buzz))
-                {
-                    input.SetLight(_currentChecking, true);
-                    setImageVisibility(_currentChecking, true);
-
-                    _currentChecking++;
-                    onAskForPlayerPress.Invoke(_currentChecking);
-
-                    if (_currentChecking == 4)
-                    {
-                        input.SetLight(0, false);
-                        input.SetLight(1, false);
-                        input.SetLight(2, false);
-                        input.SetLight(3, false);
-
-                        onAllPlayersHavePressed.Invoke();
-                        _callback?.Invoke();
-                        _callback = null;
-                        _order = Order.None;
-                    }
-                }
-                break;
-
-            case Order.Arbitrary:
-                for (int i = 0; i < 4; i++)
-                {
-                    if (input.GetButtonDown(i, BuzzInput.BuzzButton.Buzz))
-                    {
-                        input.SetLight(i, true);
-                        _playerPressed[i] = true;
-                        setImageVisibility(i, true);
-                    }
-                }
-                if (_playerPressed.All(p => p))
-                {
-                    input.SetLight(0, false);
-                    input.SetLight(1, false);
-                    input.SetLight(2, false);
-                    input.SetLight(3, false);
-
-                    onAllPlayersHavePressed.Invoke();
-                    _callback?.Invoke();
-                    _callback = null;
-                    _order = Order.None;
-                }
-                break;
-
-            default:
+            case PollingState.OrderingFrom1To4 when CheckFrom1To4():
+            case PollingState.OrderingArbitrarily when CheckArbitrarily():
+                _pollingState = PollingState.Idle;
+                AllPlayersHavePressed();
                 break;
         }
     }
 
+    private bool CheckArbitrarily()
+    {
+        for (var player = 0; player < 4; player++)
+        {
+            if (input.GetButtonDown(player, BuzzInput.BuzzButton.Buzz))
+            {
+                input.SetLight(player, true);
+                SetImageVisibility(player, true);
+                _playerPressed[player] = true;
+            }
+        }
 
-    private void setImageVisibility(int playerIndex, bool visible)
+        return _playerPressed.All(p => p);
+    }
+
+    private bool CheckFrom1To4()
+    {
+        Assert.IsTrue(_currentChecking is >= 0 and < 4,
+            $"Current checking index {_currentChecking} is out of bounds!");
+        
+        if (input.GetButtonDown(_currentChecking, BuzzInput.BuzzButton.Buzz))
+        {
+            input.SetLight(_currentChecking, true);
+            SetImageVisibility(_currentChecking, true);
+            if (++_currentChecking < 4)
+                onAskForPlayerPress.Invoke(_currentChecking);
+        }
+        return _currentChecking == 4;
+    }
+
+    private void AllPlayersHavePressed()
+    {
+        TurnOffAllLights();
+        
+        onAllPlayersHavePressed.Invoke();
+        if (_callback != null) {
+            _callback();
+            _callback = null;
+        }
+    }
+
+    #endregion
+
+    private void SetImageVisibility(int playerIndex, bool visible)
     {
         // images[playerIndex].gameObject.SetActive(visible);
 
-        Color currColor = images[playerIndex].color;
+        var currColor = images[playerIndex].color;
         currColor.a = visible ? 1.0f : 0.0f;
         images[playerIndex].color = currColor;
     }
-
 }

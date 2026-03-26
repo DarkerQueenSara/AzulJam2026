@@ -210,7 +210,7 @@ public class MainSceneManager : MonoBehaviour
     private void CleanUp()
     {
         Debug.Log($"Entrou no CleanUp");
-        checkReady.HideAll();
+        checkReady.HideAllImages();
         checkReady.enabled = false;
 
         _recentlyDeceased.Clear();
@@ -460,10 +460,7 @@ public class MainSceneManager : MonoBehaviour
                 }
                 StartCoroutine(DisplayWinner(0.0f, highestIndex));
             }
-            checkReady.RequestAllPlayerPress(CheckReady.Order.Arbitrary, () =>
-            {
-                SceneManager.LoadScene(0);
-            });
+            checkReady.RequestAllPlayersPress(inOrder: false, whenAllHavePressed: () => SceneManager.LoadScene(0));
         }
     }
 
@@ -537,7 +534,7 @@ public class MainSceneManager : MonoBehaviour
         commandText.text = discussionString;
         commandText.gameObject.SetActive(true);
 
-        checkReady.RequestAllPlayerPress(CheckReady.Order.Arbitrary, CleanUp);
+        checkReady.RequestAllPlayersPress(inOrder: false, whenAllHavePressed: CleanUp);
     }
 
     private IEnumerator DisplayAllLose(float seconds)

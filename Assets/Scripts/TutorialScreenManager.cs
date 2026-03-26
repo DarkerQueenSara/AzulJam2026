@@ -13,7 +13,7 @@ public class TutorialScreenManager : MonoBehaviour
     private void Start()
     {
         checkReady.onAllPlayersHavePressed.AddListener(NextSentence);
-        checkReady.RequestAllPlayerPress(CheckReady.Order.Arbitrary);
+        checkReady.RequestAllPlayersPress(inOrder: false);
     }
 
     public void NextSentence()
@@ -35,6 +35,6 @@ public class TutorialScreenManager : MonoBehaviour
     {
         yield return new WaitForSeconds(0.5f);
         tutorialText.GetComponent<TextMeshProUGUI>().text = tutorialTextLines[_currentIndex];
-        checkReady.RequestAllPlayerPress(CheckReady.Order.Arbitrary);
+        checkReady.RequestAllPlayersPress(inOrder: false);
     }
 }
