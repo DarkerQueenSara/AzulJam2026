@@ -14,6 +14,7 @@ public class TutorialScreenManager : MonoBehaviour
     {
         checkReady.onAllPlayersHavePressed.AddListener(NextSentence);
         checkReady.RequestAllPlayersPress(inOrder: false);
+        tutorialTextLines.GetEnumerator().MoveNext();
     }
 
     public void NextSentence()

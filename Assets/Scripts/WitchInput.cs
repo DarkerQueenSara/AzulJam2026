@@ -59,13 +59,13 @@ public class WitchInput : MonoBehaviour
     {
         // Check confirmations (Buzz (red) or 5/T/G/B)
         const int confirm = (int)BuzzInput.BuzzButton.Buzz;
-        for (var player = 0; player < NumPlayers; player++)
+        for (var player = 0; player < PlayerCount; player++)
             if (_buttons[player, confirm].wasPressedThisFrame
                 || _keys[player, confirm].wasPressedThisFrame)
                 onConfirmation?.Invoke((Player)player);
 
         // Check votes and bets
-        for (var player = 0; player < NumPlayers; player++)
+        for (var player = 0; player < PlayerCount; player++)
         for (var button = 1; button < 5; button++)
             if (_buttons[player, button].wasPressedThisFrame
                 || _keys[player, button].wasPressedThisFrame)

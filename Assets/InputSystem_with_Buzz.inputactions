@@ -696,11 +696,11 @@
             ]
         },
         {
-            "name": "Game",
+            "name": "Witch Input",
             "id": "0d856098-63fc-409f-bb94-1aa3cee77ec9",
             "actions": [
                 {
-                    "name": "Player 1 Buzz",
+                    "name": "P1 Buzz",
                     "type": "Button",
                     "id": "b028f0c3-ce1d-48d0-a64a-a5ff8808629b",
                     "expectedControlType": "",
@@ -709,9 +709,27 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Player 1 bets demise",
+                    "name": "P1 votes P2",
                     "type": "Button",
                     "id": "f7b682d2-652f-4175-8ef5-9885e83f16bd",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "P1 votes P3",
+                    "type": "Button",
+                    "id": "05eda402-a224-405b-8d60-18cfb99af91d",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "P1 votes P4",
+                    "type": "Button",
+                    "id": "3e0d91e1-7f1a-465e-bff3-e662f8506377",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -726,7 +744,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Player 1 Buzz",
+                    "action": "P1 Buzz",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -737,29 +755,117 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Player 1 Buzz",
+                    "action": "P1 Buzz",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
                     "id": "da5a7ddc-cfe3-44a9-8cfb-c9804c66a97e",
-                    "path": "<Keyboard>/t",
+                    "path": "<Keyboard>/5",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Player 1 Buzz",
+                    "action": "P1 Buzz",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
                     "id": "47786680-6328-42dd-b634-c6343a9afcc1",
-                    "path": "<Wireless Buzz Controller>/P1Buzz",
+                    "path": "<Buzz Controller>/P1Orange",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Player 1 bets demise",
+                    "action": "P1 votes P2",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "447e7c64-a984-4f10-88ba-b5a444466272",
+                    "path": "<Wireless Buzz Controller>/P1Orange",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "P1 votes P2",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4b7769be-6b27-482a-b17f-5b5396d6a9cd",
+                    "path": "<Keyboard>/2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "P1 votes P2",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9793b9ed-d367-42c2-b019-9041650fa23b",
+                    "path": "<Buzz Controller>/P1Green",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "P1 votes P3",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f5ca842b-7a35-47d2-bceb-6c660b3f5b9b",
+                    "path": "<Wireless Buzz Controller>/P1Green",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "P1 votes P3",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f7a5ca59-e5de-488d-bfa7-535777744526",
+                    "path": "<Keyboard>/3",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "P1 votes P3",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b054b38c-fa2c-4840-8553-6e23d246ee07",
+                    "path": "<Buzz Controller>/P1Yellow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "P1 votes P4",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "493b47a4-13e7-4b49-8687-3baa3353dd4a",
+                    "path": "<Wireless Buzz Controller>/P1Yellow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "P1 votes P4",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4ef09796-b5e5-495f-b777-45d860bbd99d",
+                    "path": "<Keyboard>/4",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "P1 votes P4",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

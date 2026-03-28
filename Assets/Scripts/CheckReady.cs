@@ -1,15 +1,13 @@
-using BuzzControllerSystem;
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
-using JetBrains.Annotations;
-using TMPro;
-using Unity.VisualScripting;
+using BuzzControllerSystem;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using static WitchGameplay;
 
 [RequireComponent(typeof(BuzzInput))]
 public class CheckReady : MonoBehaviour
@@ -20,7 +18,7 @@ public class CheckReady : MonoBehaviour
         OrderingArbitrarily,
         Idle
     }
-    
+
     public delegate void AllPlayersPressedCallback();
 
     public BuzzInput input;
@@ -32,7 +30,7 @@ public class CheckReady : MonoBehaviour
 
     // player presses bookkeeping
     private PollingState _pollingState;
-    private int _currentChecking = 0;
+    private int _currentChecking;
     private readonly bool[] _playerPressed = new bool[4];
     private AllPlayersPressedCallback _callback;
     private readonly AwaitableCompletionSource _awaitableCompletionSource = new AwaitableCompletionSource();
@@ -53,10 +51,12 @@ public class CheckReady : MonoBehaviour
             _pollingState = PollingState.OrderingArbitrarily;
             Array.Fill(_playerPressed, false);
         }
-        
+
         HideAllImages();
         TurnOffAllLights();
     }
+
+    #region playing with async/await and Awaitables
 
     public Awaitable RequestAllPlayersPressAsync(bool inOrder)
     {
@@ -65,14 +65,24 @@ public class CheckReady : MonoBehaviour
         return _awaitableCompletionSource.Awaitable;
     }
 
-    public async System.Collections.Generic.IAsyncEnumerable<int> PlayersBuzzInOrderAsync()
+    public async IAsyncEnumerable<Player> PlayersBuzzInOrderAsync()
     {
-        for (var player = 0; player < 4; player++)
+        for (var playerToConfirm = Player.P1; playerToConfirm <= Player.P4; playerToConfirm++)
         {
-            yield return player;
-            while (!input.GetButtonDown(player, BuzzInput.BuzzButton.Buzz))
-                await Awaitable.NextFrameAsync();
+            yield return playerToConfirm;
+            await Utils.SubscribeUntil(WitchInput.current.onConfirmation,
+                confirmingPlayer => confirmingPlayer == playerToConfirm);
         }
+    }
+
+    public async Awaitable PlayersBuzzAnyOrderAsync()
+    {
+        var confirmations = new BitVector32();
+        do
+        {
+            var confirmingPlayer = await WitchInput.current.onConfirmation;
+            confirmations[(int)confirmingPlayer] = true;
+        } while (confirmations.Data != 0b1111);
     }
 
     public void TurnOffAllLights()
@@ -87,10 +97,26 @@ public class CheckReady : MonoBehaviour
             SetImageVisibility(player, false);
     }
 
+    #endregion
+
     private void Update()
     {
-        PollPlayersInSelectedOrder();
+        if (_pollingFunctions[(int)_pollingState]())
+        {
+            _pollingState = PollingState.Idle;
+            AllPlayersHavePressed();
+        }
     }
+
+    private readonly Func<bool>[] _pollingFunctions = new Func<bool>[4];
+
+    private void Awake()
+    {
+        Array.Fill(_pollingFunctions, () => false);
+        _pollingFunctions[(int)PollingState.OrderingFrom1To4] = CheckFrom1To4;
+        _pollingFunctions[(int)PollingState.OrderingArbitrarily] = CheckArbitrarily;
+    }
+
 
     #region Polling player readiness in selected order
 
@@ -125,7 +151,7 @@ public class CheckReady : MonoBehaviour
     {
         Assert.IsTrue(_currentChecking is >= 0 and < 4,
             $"Current checking index {_currentChecking} is out of bounds!");
-        
+
         if (input.GetButtonDown(_currentChecking, BuzzInput.BuzzButton.Buzz))
         {
             input.SetLight(_currentChecking, true);
@@ -133,15 +159,17 @@ public class CheckReady : MonoBehaviour
             if (++_currentChecking < 4)
                 onAskForPlayerPress.Invoke(_currentChecking);
         }
+
         return _currentChecking == 4;
     }
 
     private void AllPlayersHavePressed()
     {
         TurnOffAllLights();
-        
+
         onAllPlayersHavePressed.Invoke();
-        if (_callback != null) {
+        if (_callback != null)
+        {
             _callback();
             _callback = null;
         }

@@ -10,6 +10,18 @@ public class JoinSceneManager : MonoBehaviour
     public TextMeshProUGUI text;
     public CheckReady checkReady;
 
+
+    private async Awaitable Start()
+    {
+        await foreach (var player in checkReady.PlayersBuzzInOrderAsync())
+        {
+            text.text = string.Format(msgPlayerPress, player + 1);
+        }
+        StartCoroutine(AllReadyCountdownCoro());
+    }
+    
+    
+
     private void Start1()
     {
         checkReady.onAskForPlayerPress.AddListener(UpdateTextNextPlayer);
