@@ -279,6 +279,26 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3531335468613305918, guid: 26c2be5c4a4a5bf42b2cb7f7f000f7d3, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3531335468613305918, guid: 26c2be5c4a4a5bf42b2cb7f7f000f7d3, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3531335468613305918, guid: 26c2be5c4a4a5bf42b2cb7f7f000f7d3, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3531335468613305918, guid: 26c2be5c4a4a5bf42b2cb7f7f000f7d3, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3531335468613305918, guid: 26c2be5c4a4a5bf42b2cb7f7f000f7d3, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5637833836124755923, guid: 26c2be5c4a4a5bf42b2cb7f7f000f7d3, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -424,7 +444,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 4.765625
+  orthographic size: 4.75
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -760,9 +780,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81ad70ceb1863b499bb04a78b7d79e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::JoinSceneManager
-  text: {fileID: 1169314891}
   msgPlayerPress: Player {0}, press the red button!
   msgCountdown: Starting in {0}...
+  text: {fileID: 1169314891}
   checkReady: {fileID: 1984230086}
 --- !u!1 &717685806
 GameObject:

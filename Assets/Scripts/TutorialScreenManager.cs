@@ -1,41 +1,23 @@
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class TutorialScreenManager : MonoBehaviour
 {
     public List<string> tutorialTextLines;
-    public GameObject tutorialText;
+    public TextMeshProUGUI tutorialText;
     public CheckReady checkReady;
 
-    private int _currentIndex = 0;
-
-    private void Start()
+    private async Awaitable Start()
     {
-        checkReady.onAllPlayersHavePressed.AddListener(NextSentence);
-        checkReady.RequestAllPlayersPress(inOrder: false);
-        tutorialTextLines.GetEnumerator().MoveNext();
-    }
-
-    public void NextSentence()
-    {
-        //advance to next string
-        _currentIndex++;
-        if (_currentIndex < tutorialTextLines.Count)
+        foreach (var line in tutorialTextLines)
         {
-            StartCoroutine(NextSentenceCoro());
+            tutorialText.text = line;
+            await checkReady.PlayersBuzzAnyOrderAsync();
         }
-        else
-        {
-            UnityEngine.SceneManagement.SceneManager.LoadScene(
-                UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex + 1);
-        }
-    }
 
-    System.Collections.IEnumerator NextSentenceCoro()
-    {
-        yield return new WaitForSeconds(0.5f);
-        tutorialText.GetComponent<TextMeshProUGUI>().text = tutorialTextLines[_currentIndex];
-        checkReady.RequestAllPlayersPress(inOrder: false);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 }

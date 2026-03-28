@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using BuzzControllerSystem;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.InputSystem.LowLevel;
 
 public static class Utils
 {
@@ -34,5 +36,17 @@ public static class Utils
             yield return await  unityEvent;
         }
         // ReSharper disable once IteratorNeverReturns
+    }
+
+    public static async Awaitable UntilAsync(Func<bool> predicate)
+    {
+        while (!predicate())
+            await Awaitable.NextFrameAsync();
+    }
+
+    public static void TurnOffAllBuzzLights()
+    {
+        var lightsOff = BuzzOutputReport.Create(false, false, false, false);
+        BuzzInputDevice.current.ExecuteCommand(ref lightsOff);
     }
 }

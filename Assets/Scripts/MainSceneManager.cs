@@ -11,11 +11,11 @@ using UnityEngine.Windows;
 // ReSharper disable InvertIf
 // ReSharper disable SuggestVarOrType_Elsewhere
 
-[RequireComponent(typeof(BuzzInput))]
 public class MainSceneManager : MonoBehaviour
 {
     private static readonly int Reveal = Animator.StringToHash("Reveal");
     private BuzzInput _buzzInput;
+    private WitchInput _input;
 
     public int deathCap;
     
@@ -113,7 +113,7 @@ public class MainSceneManager : MonoBehaviour
         }
         
         _commandTextAnimator = commandText.GetComponent<Animator>();
-        _buzzInput = GetComponent<BuzzInput>();
+        _input = WitchInput.current;
 
         _votesAnimators = new List<Animator>();
         for (int i = 0; i < votesHolder.transform.childCount; i++)
@@ -155,7 +155,7 @@ public class MainSceneManager : MonoBehaviour
                 {
                     for (int i = 1; i <= 4; i++)
                     {
-                        if (_buzzInput.GetButtonDown(p, (BuzzInput.BuzzButton)i))
+                        if (_input.GetButtonDown(p, i))
                         {
                             _votes.Add(new KeyValuePair<int, int>(p, i - 1));
                             _voted[p] = true;
@@ -179,7 +179,7 @@ public class MainSceneManager : MonoBehaviour
                     for (int i = 1; i <= 4; i++)
                     {
                         //Debug.Log("Entrou no ciclo");
-                        if (_buzzInput.GetButtonDown(p, (BuzzInput.BuzzButton)i))
+                        if (_input.GetButtonDown(p, i))
                         {
                             Debug.Log($"current bet target = {_currentBetTarget}  |  {!_deadPlayers[i - 1]}   |   {i != p+1}  (i={i}, p={p}, p+1={p+1})   |   {_currentBetTarget == -1}");
                             if (!_deadPlayers[i - 1] && i != p+1 && _currentBetTarget == -1)
