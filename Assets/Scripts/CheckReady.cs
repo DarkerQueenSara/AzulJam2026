@@ -37,6 +37,7 @@ public class CheckReady : MonoBehaviour
         {
             yield return playerToConfirm;
             await Utils.UntilAsync(() => witchInput.GetButtonDown(playerToConfirm, BuzzButton.Buzz));
+            // await Utils.SubscribeUntil(witchInput.onConfirmation, playerToConfirm);
             SetImageVisibility((int)playerToConfirm, true);
         }
 
@@ -61,12 +62,15 @@ public class CheckReady : MonoBehaviour
 
     private void AllPlayersHavePressed()
     {
-        onAllPlayersHavePressed.Invoke();
+        onAllPlayersHavePressed?.Invoke();
     }
 
     private void SetImageVisibility(int playerIndex, bool visible)
     {
-        buzzInput.SetLight(playerIndex, visible);
+        if (BuzzInputDevice.current != null)
+        {
+            buzzInput.SetLight(playerIndex, visible);
+        }
 
         var currColor = images[playerIndex].color;
         currColor.a = visible ? 1.0f : 0.0f;
