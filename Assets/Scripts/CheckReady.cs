@@ -31,12 +31,15 @@ public class CheckReady : MonoBehaviour
 
     public async IAsyncEnumerable<Player> PlayersBuzzInOrderAsync()
     {
+        await Awaitable.NextFrameAsync();
         HideAllImages();
 
         for (var playerToConfirm = Player.P1; playerToConfirm <= Player.P4; playerToConfirm++)
         {
             yield return playerToConfirm;
+            Debug.Log($"await start for player {playerToConfirm}");
             await Utils.UntilAsync(() => witchInput.GetButtonDown(playerToConfirm, BuzzButton.Buzz));
+            Debug.Log($"await finished for player {playerToConfirm}");
             // await Utils.SubscribeUntil(witchInput.onConfirmation, playerToConfirm);
             SetImageVisibility((int)playerToConfirm, true);
         }

@@ -1,32 +1,17 @@
 using UnityEngine;
 using BuzzControllerSystem;
-using UnityEngine.Assertions;
+using UnityEngine.SceneManagement;
+using static WitchGameplay;
 
-[RequireComponent(typeof(BuzzInput))]
+[RequireComponent(typeof(WitchInput))]
 public class TitleScreenManager : MonoBehaviour
 {
-    const int NUM_BUZZ_PLAYERS = 4;
-    const int NUM_BUZZ_BUTTONS = 5;
-
-    public BuzzInput buzzInput;
-    public BuzzInput.BuzzButton startButton = BuzzInput.BuzzButton.Buzz;
-
-    void Start()
+    private async Awaitable Start()
     {
-        buzzInput = GetComponent<BuzzInput>();
-        buzzInput.StartLightSequence(BuzzInput.BuzzLightSequence.FastMove);
-    }
-
-    void Update()
-    {
-        for (int player = 0; player < NUM_BUZZ_PLAYERS; player++)
-        {
-            if (buzzInput.GetButtonDown(player, startButton))
-            {
-                //Load the next scene
-                buzzInput.StopLightSequence();
-                UnityEngine.SceneManagement.SceneManager.LoadScene(1);
-            }
-        }
+        // TODO restore hype light sequence
+        // buzzInput.StartLightSequence(BuzzInput.BuzzLightSequence.FastMove);
+        
+        await GetComponent<WitchInput>().onConfirmation;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 }

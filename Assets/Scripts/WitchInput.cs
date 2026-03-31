@@ -69,9 +69,9 @@ public class WitchInput : MonoBehaviour
 
     #region MonoBehaviour lifecycle
 
-    // Enforce singleton (maybe?)
     private void Awake()
     {
+        // Enforce singleton (maybe?)
         if (FindObjectsByType<WitchInput>().Length >= 2)
         {
             Debug.LogWarning("Found " + FindObjectsByType<WitchInput>().Length + " WitchInputs");
@@ -82,12 +82,7 @@ public class WitchInput : MonoBehaviour
             Debug.Log($"{nameof(WitchInput)}.current = {this}");
             current = this;
         }
-    }
-
-    // Initialize Buzz and keyboard buttons matrices
-    // (BuzzInput accesses BuzzInputDevice.current on Start, so I'm doing the same, but this could be cargo culting)
-    private void Start()
-    {
+        
         // Buzz
         var buzz = BuzzInputDevice.current;
         if (buzz != null)
@@ -98,8 +93,9 @@ public class WitchInput : MonoBehaviour
         // keyboard
         var kb = Keyboard.current;
         Assert.IsNotNull(kb, "I assume there's always a keyboard present here");
-        _keys = _GetKeyboardKeyMatrix(kb);
+        _keys = _GetKeyboardKeyMatrix(kb);       // Initialize Buzz and keyboard buttons matrices
     }
+    
 
     // Refresh the whole _buttonsPressedThisFrame matrix,
     // and dispatch some interesting events for driving gameplay logic while we are at it.

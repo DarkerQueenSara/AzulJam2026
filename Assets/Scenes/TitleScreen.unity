@@ -226,7 +226,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 2.9296875
+  orthographic size: 3.1666667
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -791,8 +791,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c476282712c34d94bab13ff56461c81a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TitleScreenManager
-  buzzInput: {fileID: 1420489953}
-  startButton: 0
 --- !u!4 &1420489952
 Transform:
   m_ObjectHideFlags: 0
@@ -817,12 +815,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 1420489950}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 58bc32c909fc96545a58cb5ca6e2aac9, type: 3}
+  m_Script: {fileID: 11500000, guid: c47b8b68de658bc49880e101ff9652dc, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BuzzControllerSystem.BuzzInput
-  slowSequenceTime: 1
-  normalSequenceTime: 0.4
-  fastSequenceTime: 0.1
+  m_EditorClassIdentifier: Assembly-CSharp::WitchInput
+  onConfirmation:
+    m_PersistentCalls:
+      m_Calls: []
+  onVote:
+    m_PersistentCalls:
+      m_Calls: []
+  onBet:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1461153339
 GameObject:
   m_ObjectHideFlags: 0
