@@ -679,7 +679,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 5.1875
+  orthographic size: 3.1666667
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -751,7 +751,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &609315108
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2853,6 +2853,30 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1727501855732355749, guid: 26c2be5c4a4a5bf42b2cb7f7f000f7d3, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3531335468613305918, guid: 26c2be5c4a4a5bf42b2cb7f7f000f7d3, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3531335468613305918, guid: 26c2be5c4a4a5bf42b2cb7f7f000f7d3, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3531335468613305918, guid: 26c2be5c4a4a5bf42b2cb7f7f000f7d3, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3531335468613305918, guid: 26c2be5c4a4a5bf42b2cb7f7f000f7d3, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3531335468613305918, guid: 26c2be5c4a4a5bf42b2cb7f7f000f7d3, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3531335468613305918, guid: 26c2be5c4a4a5bf42b2cb7f7f000f7d3, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}

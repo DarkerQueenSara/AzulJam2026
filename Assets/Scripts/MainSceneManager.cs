@@ -113,6 +113,7 @@ public class MainSceneManager : MonoBehaviour
         }
         
         _commandTextAnimator = commandText.GetComponent<Animator>();
+        _buzzInput = GetComponent<BuzzInput>();
         _input = WitchInput.current;
 
         _votesAnimators = new List<Animator>();
