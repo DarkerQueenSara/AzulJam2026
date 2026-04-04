@@ -13,6 +13,7 @@ using UnityEngine.Windows;
 
 public class MainSceneManager : MonoBehaviour
 {
+    private static readonly int SlideIn = Animator.StringToHash("SlideIn");
     private static readonly int Reveal = Animator.StringToHash("Reveal");
     private BuzzInput _buzzInput;
     private WitchInput _input;
