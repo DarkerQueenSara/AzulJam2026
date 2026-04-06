@@ -1,5 +1,5 @@
 # Annoying heavyweight font assets
-Assets/Fonts/*SDF.asset
+*[Ss][Dd][Ff]*.asset
 
 # This .gitignore file should be placed at the root of your Unity project directory
 #
