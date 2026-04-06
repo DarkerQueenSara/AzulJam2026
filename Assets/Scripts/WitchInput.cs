@@ -81,6 +81,7 @@ public class WitchInput : MonoBehaviour
         {
             Debug.Log($"{nameof(WitchInput)}.current = {this}");
             current = this;
+            // DontDestroyOnLoad(gameObject);
         }
         
         // Buzz
@@ -97,8 +98,8 @@ public class WitchInput : MonoBehaviour
     }
     
 
-    // Refresh the whole _buttonsPressedThisFrame matrix,
-    // and dispatch some interesting events for driving gameplay logic while we are at it.
+    /// Refresh the whole _buttonsPressedThisFrame matrix,
+    /// and dispatch some interesting events for driving gameplay logic while we are at it.
     private void Update()
     {
         // Check confirmations (Buzz (red) or 5/T/G/B)

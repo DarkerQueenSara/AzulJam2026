@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using BuzzControllerSystem;
 using UnityEngine;
 using UnityEngine.Events;
@@ -26,12 +27,31 @@ public class CheckReady : MonoBehaviour
 
     public void RequestAllPlayersPress(bool inOrder, Action whenAllHavePressed)
     {
-        PlayersBuzzAnyOrderAsync().GetAwaiter().OnCompleted(whenAllHavePressed);
+        Debug.Log($"RequestAllPlayersPress(inOrder: {inOrder})...");
+
+        Task.Run(inOrder ? InOrder : AnyOrder).ContinueWith(Continuation);
+        return;
+
+        async Task AnyOrder()
+        {
+            await PlayersBuzzAnyOrderAsync();
+        }
+
+        async Task InOrder()
+        {
+            await foreach (var _ in PlayersBuzzInOrderAsync()) ;
+        }
+
+        async Task Continuation(Task _)
+        {
+            await Awaitable.MainThreadAsync();
+            whenAllHavePressed?.Invoke();
+        }
     }
 
     public async IAsyncEnumerable<Player> PlayersBuzzInOrderAsync()
     {
-        await Awaitable.NextFrameAsync();
+        await Awaitable.MainThreadAsync();
         HideAllImages();
 
         for (var playerToConfirm = Player.P1; playerToConfirm <= Player.P4; playerToConfirm++)
@@ -49,6 +69,7 @@ public class CheckReady : MonoBehaviour
 
     public async Awaitable PlayersBuzzAnyOrderAsync()
     {
+        await Awaitable.MainThreadAsync();
         HideAllImages();
 
         var confirmations = 0b0000;

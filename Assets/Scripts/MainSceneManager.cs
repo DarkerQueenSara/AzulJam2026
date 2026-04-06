@@ -1,13 +1,15 @@
-using BuzzControllerSystem;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using BuzzControllerSystem;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using UnityEngine.Windows;
+using static WitchGameplay;
+using Random = UnityEngine.Random;
+
 // ReSharper disable InvertIf
 // ReSharper disable SuggestVarOrType_Elsewhere
 
@@ -47,15 +49,13 @@ public class MainSceneManager : MonoBehaviour
 
     public List<string> questions;
 
-    private List<Image> _redButtons = new List<Image>();
-    
     private int[] _scores;
 
     //Two numbers: the player that voted, and who they voted for
     //they come in at different orders
-    private List<KeyValuePair<int, int>> _votes;
+    private List<(Player from, Player to)> _votes;
     //A bet has a target and a type, and is associated with one player
-    private List<KeyValuePair<int, KeyValuePair<int, bool>>> _bets;
+    private List<(Player from, Player target, Bet type)>  _bets;
     
     private List<int> _recentlyDeceased;
     private bool[] _voted;
@@ -64,7 +64,7 @@ public class MainSceneManager : MonoBehaviour
     private bool[] _deadPlayers;
 
     private int _currentBetTarget;
-    private bool _currentBetType;
+    private Bet _currentBetType;
     
     private bool _votingActive;
     
@@ -78,7 +78,6 @@ public class MainSceneManager : MonoBehaviour
     private int _currentVoteTarget = -1;
 
     private int _betsThisRound = 0;
-    private bool _betsExist = false;
     private bool _roundDone = false;
     private bool _advanceCalled = false;
 
@@ -101,17 +100,11 @@ public class MainSceneManager : MonoBehaviour
         _scores = new int[4];
         _voted = new bool[4];
         _canBet = new bool[4];
-        _bets = new List<KeyValuePair<int, KeyValuePair<int, bool>>>();
-        _votes = new List<KeyValuePair<int, int>>();
+        _bets = new List<(Player from, Player target, Bet type)>(4);
+        _votes = new List<(Player from, Player to)>();
         _deadPlayers = new bool[4];
         _recentlyDeceased = new List<int>();
         skulls.gameObject.SetActive(false);
-
-        for (int i = 0; i < 4; i++)
-        {
-            _scores[i] = 0;
-            _redButtons.Add(redButtonHolder.transform.GetChild(i).GetComponent<Image>());
-        }
         
         _commandTextAnimator = commandText.GetComponent<Animator>();
         _buzzInput = GetComponent<BuzzInput>();
@@ -159,7 +152,7 @@ public class MainSceneManager : MonoBehaviour
                     {
                         if (_input.GetButtonDown(p, i))
                         {
-                            _votes.Add(new KeyValuePair<int, int>(p, i - 1));
+                            _votes.Add(((Player)p, (Player)(i - 1)));
                             _voted[p] = true;
                             AddVote(_votes.Count() - 1, i - 1);
                         }
@@ -188,19 +181,18 @@ public class MainSceneManager : MonoBehaviour
                             {
                                 Debug.Log($"Player {p} bet on player {i - 1}");
                                 _currentBetTarget = i - 1;
-                                StartCoroutine(waitForBetType(0.0f));
+                                StartCoroutine(WaitForBetType(0.0f));
                             }
                             else if (_currentBetTarget >= 0)
                             {
                                 Debug.Log($"Player {p} bet on player {i-1} on type {i > 2}");
-                                _currentBetType = i > 2;
+                                _currentBetType = i > 2 ? Bet.Demise : Bet.Survival;
                                 _bets.Add(
-                                    new KeyValuePair<int, KeyValuePair<int, bool>>(p,
-                                        new KeyValuePair<int, bool>(_currentBetTarget, _currentBetType)));
+                                    (from: (Player)p, target: (Player)_currentBetTarget, type: _currentBetType));
                                 _canBet[p] = false;
                                 _currentBetter = -1;
                                 _betsThisRound++;
-                                waitForNextBeter(1.0f);
+                                StartCoroutine(WaitForNextBeter(1.0f));
                             }
                         }
                     }
@@ -234,7 +226,6 @@ public class MainSceneManager : MonoBehaviour
 
 
         _betsThisRound = 0;
-        _betsExist = false;
         _roundDone = false;
         _advanceCalled = false;
         NewRound();
@@ -243,7 +234,7 @@ public class MainSceneManager : MonoBehaviour
     private void NewRound()
     {
         Debug.Log($"Entrou no NewRound");
-        _currentQuestion = UnityEngine.Random.Range(0, 4);
+        _currentQuestion = Random.Range(0, 4);
         _buzzInput.StopLightSequence();
         _buzzInput.SetLight(0, false);
         _buzzInput.SetLight(1, false);
@@ -256,20 +247,20 @@ public class MainSceneManager : MonoBehaviour
             {
                 var auxList = _currentQuestion == 0 ? pointsToGain : pointsToLose;
             
-                _currentScore = auxList[UnityEngine.Random.Range(0, auxList.Count)];
+                _currentScore = auxList[Random.Range(0, auxList.Count)];
                 commandText.text = questions[_currentQuestion]
                     .Replace("X", _currentScore.ToString())
                     .Replace("Z", (_currentScore > 1) ? "s" : "");
                 break;
             }
             case 2:
-                _currentVoteTarget = UnityEngine.Random.Range(0, 4);
+                _currentVoteTarget = Random.Range(0, 4);
                 commandText.text = questions[_currentQuestion]
                     .Replace("Y", NumToColor(_currentVoteTarget));
                 break;
             case 3:
-                _currentScore = pointsToGain[UnityEngine.Random.Range(0, pointsToGain.Count)];
-                _currentLoss = pointsToLose[UnityEngine.Random.Range(0, pointsToLose.Count)];
+                _currentScore = pointsToGain[Random.Range(0, pointsToGain.Count)];
+                _currentLoss = pointsToLose[Random.Range(0, pointsToLose.Count)];
                 commandText.text = questions[_currentQuestion]
                     .Replace("X", _currentScore.ToString())
                     .Replace("O", _currentLoss.ToString())
@@ -316,13 +307,11 @@ public class MainSceneManager : MonoBehaviour
             StartCoroutine(ShowVote(0.5f, i));
         }
 
-        List<int> votesCount = _votes.Select(t => t.Value).ToList();
-
-        int winner = votesCount.GroupBy(i=>i).OrderByDescending(grp=>grp.Count())
-            .Select(grp=>grp.Key).First();
+        (int numVotes, Player winner) = _votes
+            .GroupBy(vote => vote.to)
+            .Max(grouping => (grouping.Count(), grouping.Key));
         
-        StartCoroutine(ShowWinner(2.0f, winner, votesCount.Count(vote => vote == winner)));
-
+        StartCoroutine(ShowWinner(2.0f, winner, numVotes));
     }
     
     private IEnumerator ShowVote(float seconds, int index)
@@ -332,14 +321,14 @@ public class MainSceneManager : MonoBehaviour
         _votesText[index].gameObject.SetActive(true);
     }
     
-    private IEnumerator ShowWinner(float seconds, int winner, int numVotes)
+    private IEnumerator ShowWinner(float seconds, Player winner, int numVotes)
     {
         Debug.Log($"Entrou no ShowWinner com winner {winner} e numVotes {numVotes}");
         yield return new WaitForSeconds(seconds);
 
         for (int i = 0; i < _votes.Count; i++)
         {
-            if (_votes[i].Value != winner)
+            if (_votes[i].to != winner)
             {
                 _votesAnimators[i].gameObject.SetActive(false);
             }
@@ -361,9 +350,11 @@ public class MainSceneManager : MonoBehaviour
         }
     }
 
-    private void ScoreVote(int winner, int numVotes)
+    private void ScoreVote(Player winnerPlayer, int numVotes)
     {
-        Debug.Log($"Entrou no ScoreVote com winner {winner} e numVotes {numVotes}");
+        Debug.Log($"Entrou no ScoreVote com winner {winnerPlayer} e numVotes {numVotes}");
+
+        int winner = (int)winnerPlayer;
         
         switch (_currentQuestion)
         {
@@ -417,7 +408,7 @@ public class MainSceneManager : MonoBehaviour
             }
         }
 
-        _betsExist = _recentlyDeceased.Any();
+        // _recentlyDeceased.Any(); ...
 
         if (_deadPlayers.Count(p => p) >= 3)
         {
@@ -427,19 +418,19 @@ public class MainSceneManager : MonoBehaviour
             bool[] newDeads = (bool[]) _deadPlayers.Clone();
             foreach (var bet in _bets)
             {
-                if (_deadPlayers[bet.Value.Key] == bet.Value.Value)
+                if (_deadPlayers[(int)bet.target] == (bet.type == Bet.Demise))
                 {
-                    newDeads[bet.Key] = false;
+                    newDeads[(int)bet.from] = false;
                 }
             }
 
             _deadPlayers = newDeads;
 
-            for (int i = 0; i < _scores.Length; i++)
-            {
+            // for (int i = 0; i < _scores.Length; i++)
+            // {
                 // aliveImages[i].gameObject.SetActive(!_deadPlayers[i]);
                 // deadImages[i].gameObject.SetActive(_deadPlayers[i]);
-            }
+            // }
 
             if (newDeads.All(p => p))
             {
@@ -462,7 +453,11 @@ public class MainSceneManager : MonoBehaviour
                 }
                 StartCoroutine(DisplayWinner(0.0f, highestIndex));
             }
-            checkReady.RequestAllPlayersPress(inOrder: false, whenAllHavePressed: () => SceneManager.LoadScene(0));
+            checkReady.RequestAllPlayersPress(inOrder: false, whenAllHavePressed: () =>
+            {
+                Debug.Log("All players confirmed. Loading scene #0");
+                SceneManager.LoadScene(0);
+            });
         }
     }
 
@@ -507,7 +502,7 @@ public class MainSceneManager : MonoBehaviour
     }
 
 
-    private IEnumerator waitForBetType(float seconds)
+    private IEnumerator WaitForBetType(float seconds)
     {
         Debug.Log($"Entrou no waitForBetType");
         _canBet[_currentBetter] = false;
@@ -517,7 +512,7 @@ public class MainSceneManager : MonoBehaviour
         _canBet[_currentBetter] = true;
     }
 
-    private IEnumerator waitForNextBeter(float seconds)
+    private IEnumerator WaitForNextBeter(float seconds)
     {
         Debug.Log($"Entrou no waitForNextBeter");
         yield return new WaitForSeconds(seconds);
@@ -536,7 +531,11 @@ public class MainSceneManager : MonoBehaviour
         commandText.text = discussionString;
         commandText.gameObject.SetActive(true);
 
-        checkReady.RequestAllPlayersPress(inOrder: false, whenAllHavePressed: CleanUp);
+        checkReady.RequestAllPlayersPress(inOrder: false, whenAllHavePressed: () =>
+        {
+            Debug.Log("All players confirmed. Cleaning up...");
+            CleanUp();
+        });
     }
 
     private IEnumerator DisplayAllLose(float seconds)

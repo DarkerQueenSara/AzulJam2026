@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6134978766281015471}
   - component: {fileID: 2430198989696503358}
   m_Layer: 5
-  m_Name: Image (3)
+  m_Name: P4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -75,72 +75,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!1 &5130832976836678522
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 3531335468613305918}
-  - component: {fileID: 7152777187952615818}
-  m_Layer: 5
-  m_Name: GameObject
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &3531335468613305918
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5130832976836678522}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1009438867307146634}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &7152777187952615818
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5130832976836678522}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.PlayerInput
-  m_Actions: {fileID: -944628639613478452, guid: dedde4763f2765a479e4b9f9546c2c50, type: 3}
-  m_NotificationBehavior: 2
-  m_UIInputModule: {fileID: 0}
-  m_DeviceLostEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_DeviceRegainedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_ControlsChangedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_ActionEvents: []
-  m_NeverAutoSwitchControlSchemes: 0
-  m_DefaultControlScheme: 
-  m_DefaultActionMap: Witch Input
-  m_SplitScreenIndex: -1
-  m_Camera: {fileID: 0}
 --- !u!1 &5431137288262089437
 GameObject:
   m_ObjectHideFlags: 0
@@ -153,7 +87,7 @@ GameObject:
   - component: {fileID: 1075246486275846761}
   - component: {fileID: 3496120226955328983}
   m_Layer: 5
-  m_Name: Image (1)
+  m_Name: P2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -228,7 +162,7 @@ GameObject:
   - component: {fileID: 5916592601458177878}
   - component: {fileID: 9201986381311718645}
   m_Layer: 5
-  m_Name: Image (2)
+  m_Name: P3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -303,7 +237,7 @@ GameObject:
   - component: {fileID: 7818110183793339813}
   - component: {fileID: 2099499598450982394}
   m_Layer: 5
-  m_Name: Image
+  m_Name: P1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -402,7 +336,6 @@ RectTransform:
   - {fileID: 1390467434467983485}
   - {fileID: 1727501855732355749}
   - {fileID: 980404982176686841}
-  - {fileID: 3531335468613305918}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -448,7 +381,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0791b015903e072459f39693464b8b99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  input: {fileID: 7147410131343593916}
+  buzzInput: {fileID: 0}
+  witchInput: {fileID: 0}
   images:
   - {fileID: 2099499598450982394}
   - {fileID: 3496120226955328983}
@@ -459,9 +393,6 @@ MonoBehaviour:
   - {r: 1, g: 0.49019608, b: 0, a: 1}
   - {r: 0, g: 0.7529412, b: 0.21960784, a: 1}
   - {r: 0.9647059, g: 1, b: 0, a: 1}
-  onAskForPlayerPress:
-    m_PersistentCalls:
-      m_Calls: []
   onAllPlayersHavePressed:
     m_PersistentCalls:
       m_Calls: []
