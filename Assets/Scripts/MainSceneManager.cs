@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using BuzzControllerSystem;
 using TMPro;
 using UnityEngine;
@@ -131,7 +132,7 @@ public class MainSceneManager : MonoBehaviour
 
         if (_recentlyDeceased.Count() == _betsThisRound && _roundDone && !_advanceCalled)
         {
-            AdvanceToDiscussion();
+            StartCoroutine(AdvanceToDiscussion());
         }
 
         if (_votingActive)
@@ -269,7 +270,6 @@ public class MainSceneManager : MonoBehaviour
         }
         // preencher com nrs random e/ou target random e guardar
         commandText.gameObject.SetActive(true);
-        _commandTextAnimator.Rebind();
         _commandTextAnimator.Update(0f);
         StartCoroutine(EnableVoting(0f));
     }
@@ -285,15 +285,8 @@ public class MainSceneManager : MonoBehaviour
     private void AddVote(int numberVote, int value)
     {
         Debug.Log($"Entrou no AddVote com numberVote {numberVote} e value {value}");
-        _votesAnimators[numberVote].Rebind();
-        _votesAnimators[numberVote].Update(0);
-        _votesAnimators[numberVote].gameObject.SetActive(false);
-        _votesAnimators[numberVote].Rebind();
-        _votesAnimators[numberVote].Update(0);
         _votesAnimators[numberVote].gameObject.SetActive(true);
-        _votesAnimators[numberVote].Rebind();
         _votesAnimators[numberVote].Update(0);
-        _votesAnimators[numberVote].gameObject.SetActive(true);
         _votesText[numberVote].text = NumToColor(value);
     }
     
@@ -453,12 +446,15 @@ public class MainSceneManager : MonoBehaviour
                 }
                 StartCoroutine(DisplayWinner(0.0f, highestIndex));
             }
-            checkReady.RequestAllPlayersPress(inOrder: false, whenAllHavePressed: () =>
-            {
-                Debug.Log("All players confirmed. Loading scene #0");
-                SceneManager.LoadScene(0);
-            });
+            StartCoroutine(UnanimousGameRestart());
         }
+    }
+
+    private IEnumerator UnanimousGameRestart()
+    {
+        yield return checkReady.PlayersBuzzAnyOrderAsync();
+        Debug.Log("All players confirmed. Loading scene #0");
+        SceneManager.LoadScene(0);
     }
 
     private void PlaceBetTargets()
@@ -466,7 +462,7 @@ public class MainSceneManager : MonoBehaviour
         Debug.Log($"Entrou no PlaceBetTargets com {_recentlyDeceased.Count} recentemente falecidos");
         _roundDone = true;
 
-        foreach (var e in  _votesAnimators)
+        foreach (var e in _votesAnimators)
         {
             e.gameObject.SetActive(false);
         }
@@ -479,7 +475,6 @@ public class MainSceneManager : MonoBehaviour
                 Debug.Log($"Entrou no Enabling do Bet para o jogador {i}");
                 _canBet[_recentlyDeceased[i]] = true;
                 commandText.gameObject.SetActive(false);
-                _commandTextAnimator.Rebind();
                 _commandTextAnimator.Update(0);
                 commandText.text = betTargetString.Replace("X", NumToColor(_recentlyDeceased[i]));
                 commandText.gameObject.SetActive(true);
@@ -495,7 +490,6 @@ public class MainSceneManager : MonoBehaviour
         Debug.Log($"Entrou no PlaceBetType");
         //nao pode ser só ciclo, tem de haver mecanismo para ser só um a dar bet de cada vez
         commandText.gameObject.SetActive(false);
-        _commandTextAnimator.Rebind();
         _commandTextAnimator.Update(0);
         commandText.text = betTypeString;
         commandText.gameObject.SetActive(true);
@@ -519,23 +513,19 @@ public class MainSceneManager : MonoBehaviour
         _bettingActive = false;
     }
 
-    private void AdvanceToDiscussion()
+    private IEnumerator AdvanceToDiscussion()
     {
         Debug.Log($"Entrou no AdvanceToDiscussion");
         _advanceCalled = true;
         checkReady.enabled = true;
         //start new round when all ready
         commandText.gameObject.SetActive(false);
-        _commandTextAnimator.Rebind();
         _commandTextAnimator.Update(0);
         commandText.text = discussionString;
         commandText.gameObject.SetActive(true);
 
-        checkReady.RequestAllPlayersPress(inOrder: false, whenAllHavePressed: () =>
-        {
-            Debug.Log("All players confirmed. Cleaning up...");
-            CleanUp();
-        });
+        yield return checkReady.PlayersBuzzAnyOrderAsync();
+        CleanUp();
     }
 
     private IEnumerator DisplayAllLose(float seconds)
@@ -543,7 +533,6 @@ public class MainSceneManager : MonoBehaviour
         Debug.Log($"Entrou no DisplayAllLose");
         yield return new WaitForSeconds(seconds);
         commandText.gameObject.SetActive(false);
-        _commandTextAnimator.Rebind();
         _commandTextAnimator.Update(0);
         commandText.text = allDeadString;
         commandText.gameObject.SetActive(true);
@@ -555,7 +544,6 @@ public class MainSceneManager : MonoBehaviour
         Debug.Log($"Entrou no DisplayWinner com winner {winner}");
         yield return new WaitForSeconds(seconds);
         commandText.gameObject.SetActive(false);
-        _commandTextAnimator.Rebind();
         _commandTextAnimator.Update(0);
         commandText.text = winnerString.Replace("X", NumToColor(winner));
         commandText.gameObject.SetActive(true);

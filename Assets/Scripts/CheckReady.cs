@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using BuzzControllerSystem;
 using UnityEngine;
 using UnityEngine.Events;
@@ -25,30 +23,6 @@ public class CheckReady : MonoBehaviour
         witchInput = GetComponent<WitchInput>();
     }
 
-    public void RequestAllPlayersPress(bool inOrder, Action whenAllHavePressed)
-    {
-        Debug.Log($"RequestAllPlayersPress(inOrder: {inOrder})...");
-
-        Task.Run(inOrder ? InOrder : AnyOrder).ContinueWith(Continuation);
-        return;
-
-        async Task AnyOrder()
-        {
-            await PlayersBuzzAnyOrderAsync();
-        }
-
-        async Task InOrder()
-        {
-            await foreach (var _ in PlayersBuzzInOrderAsync()) ;
-        }
-
-        async Task Continuation(Task _)
-        {
-            await Awaitable.MainThreadAsync();
-            whenAllHavePressed?.Invoke();
-        }
-    }
-
     public async IAsyncEnumerable<Player> PlayersBuzzInOrderAsync()
     {
         await Awaitable.MainThreadAsync();
@@ -57,9 +31,7 @@ public class CheckReady : MonoBehaviour
         for (var playerToConfirm = Player.P1; playerToConfirm <= Player.P4; playerToConfirm++)
         {
             yield return playerToConfirm;
-            Debug.Log($"await start for player {playerToConfirm}");
             await Utils.UntilAsync(() => witchInput.GetButtonDown(playerToConfirm, BuzzButton.Buzz));
-            Debug.Log($"await finished for player {playerToConfirm}");
             // await Utils.SubscribeUntil(witchInput.onConfirmation, playerToConfirm);
             SetImageVisibility((int)playerToConfirm, true);
         }
