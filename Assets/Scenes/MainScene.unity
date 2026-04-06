@@ -1156,6 +1156,60 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MainSceneManager
   deathCap: 5
+  questions:
+  - Which witch should win X pieceZ of evidence?
+  - Which witch should lose X pieceZ of evidence?
+  - If witch Y wins unanimously, they get 2 pieces of evidence, but everyone else
+    gets 1 too. Otherwise everyone loses 1.
+  - The winner gets X pieces of evidence, but everyone else loses O.
+  pointsToGainCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 4.9577355
+      outSlope: 4.9577355
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.045555696
+    - serializedVersion: 3
+      time: 1
+      value: 3.5
+      inSlope: 5.726983
+      outSlope: 5.726983
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.042607903
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  pointsToLoseCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 2.4415646
+      tangentMode: 1
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.09315867
+    - serializedVersion: 3
+      time: 1.0059814
+      value: 5.5
+      inSlope: 9.986576
+      outSlope: 9.986576
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.040756878
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   discussionString: Discuss amongst yourselves. When done, press the red button.
   betTargetString: Witch X, who do you want to bet on?
   betTypeString: What type of bet? Press Blue/Orange to vote on their demise, or
@@ -1170,16 +1224,7 @@ MonoBehaviour:
   skulls: {fileID: 1029117868}
   commandText: {fileID: 1811610144}
   votesHolder: {fileID: 339832451}
-  pointsToGain: 01000000010000000100000002000000020000000200000002000000020000000300000003000000
-  pointsToLose: 010000000100000001000000010000000100000002000000020000000200000002000000020000000300000003000000040000000400000005000000
-  redButtonHolder: {fileID: 3721532421753211757}
   checkReady: {fileID: 3721532421753211758}
-  questions:
-  - Which witch should win X pieceZ of evidence?
-  - Which witch should lose X pieceZ of evidence?
-  - If witch Y wins unanimously, they get 2 pieces of evidence, but everyone else
-    gets 1 too. Otherwise everyone loses 1.
-  - The winner gets X pieces of evidence, but everyone else loses O.
 --- !u!114 &695767670
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2921,17 +2966,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 26c2be5c4a4a5bf42b2cb7f7f000f7d3, type: 3}
---- !u!1 &3721532421753211757 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8195724875909327559, guid: 26c2be5c4a4a5bf42b2cb7f7f000f7d3, type: 3}
-  m_PrefabInstance: {fileID: 3721532421753211756}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &3721532421753211758 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7055456923762184169, guid: 26c2be5c4a4a5bf42b2cb7f7f000f7d3, type: 3}
   m_PrefabInstance: {fileID: 3721532421753211756}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3721532421753211757}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0791b015903e072459f39693464b8b99, type: 3}
@@ -2942,7 +2982,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1887686571455739196, guid: 26c2be5c4a4a5bf42b2cb7f7f000f7d3, type: 3}
   m_PrefabInstance: {fileID: 3721532421753211756}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3721532421753211757}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c47b8b68de658bc49880e101ff9652dc, type: 3}
@@ -2953,7 +2993,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7147410131343593916, guid: 26c2be5c4a4a5bf42b2cb7f7f000f7d3, type: 3}
   m_PrefabInstance: {fileID: 3721532421753211756}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3721532421753211757}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 58bc32c909fc96545a58cb5ca6e2aac9, type: 3}

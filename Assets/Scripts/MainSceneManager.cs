@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using BuzzControllerSystem;
 using TMPro;
 using UnityEngine;
@@ -21,16 +20,24 @@ public class MainSceneManager : MonoBehaviour
     private BuzzInput _buzzInput;
     private WitchInput _input;
 
+    [Header("Game Rules")]
     public int deathCap;
-    
+
+    [Header("Game Questions")]
     //there will be a list here with questions, but they should be
     //ScriptableObjects so the logic comes with them
+    public List<string> questions;
+    public AnimationCurve pointsToGainCurve;
+    public AnimationCurve pointsToLoseCurve;
+    
+    [Header("UI Strings")]
     public string discussionString;
     public string betTargetString;
     public string betTypeString;
     public string allDeadString;
     public string winnerString;
 
+    [Header("UI elements")]
     public List<TextMeshProUGUI> scoreTexts;
     public Image skulls;
     
@@ -41,15 +48,9 @@ public class MainSceneManager : MonoBehaviour
     private List<Animator> _votesAnimators;
     private List<TextMeshProUGUI> _votesText;
 
-    public List<int> pointsToGain;
-    public List<int> pointsToLose;
-    
-    public GameObject redButtonHolder;
-
     public CheckReady checkReady;
 
-    public List<string> questions;
-
+    [Header("Game State")]
     private int[] _scores;
 
     //Two numbers: the player that voted, and who they voted for
@@ -246,9 +247,9 @@ public class MainSceneManager : MonoBehaviour
         {
             case < 2:
             {
-                var auxList = _currentQuestion == 0 ? pointsToGain : pointsToLose;
+                var auxList = _currentQuestion == 0 ? pointsToGainCurve : pointsToLoseCurve;
             
-                _currentScore = auxList[Random.Range(0, auxList.Count)];
+                _currentScore = (int)auxList.Evaluate(Random.value);
                 commandText.text = questions[_currentQuestion]
                     .Replace("X", _currentScore.ToString())
                     .Replace("Z", (_currentScore > 1) ? "s" : "");
@@ -260,8 +261,8 @@ public class MainSceneManager : MonoBehaviour
                     .Replace("Y", NumToColor(_currentVoteTarget));
                 break;
             case 3:
-                _currentScore = pointsToGain[Random.Range(0, pointsToGain.Count)];
-                _currentLoss = pointsToLose[Random.Range(0, pointsToLose.Count)];
+                _currentScore = (int)pointsToGainCurve.Evaluate(Random.value);
+                _currentLoss = (int)pointsToLoseCurve.Evaluate(Random.value);;
                 commandText.text = questions[_currentQuestion]
                     .Replace("X", _currentScore.ToString())
                     .Replace("O", _currentLoss.ToString())
@@ -375,7 +376,7 @@ public class MainSceneManager : MonoBehaviour
                 _scores[winner] = Math.Max(0, _scores[winner] + _currentScore);
                 for (int i = 0; i < 4; i++)
                 {
-                    if (i != winner) _scores[i] = Math.Max(0, _scores[i] - 1);
+                    if (i != winner) _scores[i] = Math.Max(0, _scores[i] - _currentLoss);
                 }
 
                 break;
