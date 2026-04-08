@@ -45,8 +45,9 @@ public class MainSceneManager : MonoBehaviour
     private Animator _commandTextAnimator;
 
     public GameObject votesHolder;
-    private List<Animator> _votesAnimators;
-    private List<TextMeshProUGUI> _votesText;
+    private Animator[] _votesAnimators;
+    private TextMeshProUGUI[] _votesText;
+    private (Animator animator, TextMeshProUGUI textmesh)[] _voteScrolls;
 
     public CheckReady checkReady;
 
@@ -96,34 +97,37 @@ public class MainSceneManager : MonoBehaviour
     }
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    private void Start()
+    private void Awake()
     {
-        checkReady.enabled = false;
         _scores = new int[4];
         _voted = new bool[4];
         _canBet = new bool[4];
-        _bets = new List<(Player from, Player target, Bet type)>(4);
-        _votes = new List<(Player from, Player to)>();
+        _bets = new List<(Player from, Player target, Bet type)>(capacity: 4);
+        _votes = new List<(Player from, Player to)>(capacity: 4);
         _deadPlayers = new bool[4];
         _recentlyDeceased = new List<int>();
+
+        _buzzInput = GetComponent<BuzzInput>();
+        _commandTextAnimator = commandText.GetComponent<Animator>();
+        
+        var corners = votesHolder.transform.Cast<Transform>().ToArray();
+        _votesAnimators = corners.Select(c => c.GetComponent<Animator>()).ToArray();
+        _votesText = corners.Select(c => c.GetComponentInChildren<TextMeshProUGUI>()).ToArray();
+        
+        _voteScrolls = (
+            from Transform corner in votesHolder.transform
+            select (animator: corner.GetComponent<Animator>(),
+                    textmesh: corner.GetComponentInChildren<TextMeshProUGUI>())
+        ).ToArray();
+    }
+
+    private void Start()
+    {
+        _input = WitchInput.current;
+        
+        checkReady.enabled = false;
         skulls.gameObject.SetActive(false);
         
-        _commandTextAnimator = commandText.GetComponent<Animator>();
-        _buzzInput = GetComponent<BuzzInput>();
-        _input = WitchInput.current;
-
-        _votesAnimators = new List<Animator>();
-        for (int i = 0; i < votesHolder.transform.childCount; i++)
-        {
-            _votesAnimators.Add(votesHolder.transform.GetChild(i).GetComponent<Animator>());
-        }
-        
-        _votesText = new List<TextMeshProUGUI>();
-        foreach (var t in _votesAnimators)
-        {
-            _votesText.Add(t.transform.GetChild(0).GetComponent<TextMeshProUGUI>());
-        }
-
         NewRound();
     }
 
@@ -187,8 +191,8 @@ public class MainSceneManager : MonoBehaviour
                             }
                             else if (_currentBetTarget >= 0)
                             {
-                                Debug.Log($"Player {p} bet on player {i-1} on type {i > 2}");
                                 _currentBetType = i > 2 ? Bet.Demise : Bet.Survival;
+                                Debug.Log($"Player {p} bet on player {i-1} on type {_currentBetType}");
                                 _bets.Add(
                                     (from: (Player)p, target: (Player)_currentBetTarget, type: _currentBetType));
                                 _canBet[p] = false;
@@ -295,15 +299,21 @@ public class MainSceneManager : MonoBehaviour
     {
         Debug.Log($"Entrou no DisplayResults");
         yield return new WaitForSeconds(seconds);
-        for (int i = 0; i < _votesAnimators.Count; i++)
+        for (int i = 0; i < _votesAnimators.Length; i++)
         {
             _votesAnimators[i].SetTrigger(Reveal);
             StartCoroutine(ShowVote(0.5f, i));
         }
 
-        (int numVotes, Player winner) = _votes
+        (int numVotes, _, Player winner) = _votes
+            .Zip(Enumerable.Range(0, _votes.Count), // Add vote position for breaking ties
+                (vote, position) => (vote.from, vote.to, position))
             .GroupBy(vote => vote.to)
-            .Max(grouping => (grouping.Count(), grouping.Key));
+            .Max(grouping => (
+                grouping.Count(), // Sort primarily by number of votes
+                grouping.Min(vote => vote.position), // then by who was voted first (although we don't use this value)
+                grouping.Key // and attach the voted player into the selected value
+            ));
         
         StartCoroutine(ShowWinner(2.0f, winner, numVotes));
     }
@@ -422,8 +432,8 @@ public class MainSceneManager : MonoBehaviour
 
             // for (int i = 0; i < _scores.Length; i++)
             // {
-                // aliveImages[i].gameObject.SetActive(!_deadPlayers[i]);
-                // deadImages[i].gameObject.SetActive(_deadPlayers[i]);
+            // aliveImages[i].gameObject.SetActive(!_deadPlayers[i]);
+            // deadImages[i].gameObject.SetActive(_deadPlayers[i]);
             // }
 
             if (newDeads.All(p => p))
